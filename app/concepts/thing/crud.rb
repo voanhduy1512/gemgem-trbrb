@@ -129,11 +129,7 @@ class Thing < ActiveRecord::Base
     model Thing, :update
 
     class SignedIn < Create
-      include CRUD::ClassBuilder
-      model Thing
       action :update
-
-
 
       include Thing::SignedIn
       policy Thing::Policy, :update?
@@ -171,7 +167,7 @@ class Thing < ActiveRecord::Base
     include CRUD
     model Thing, :find
 
-    include Trailblazer::Operation::Policy
+    include Policy
     policy Thing::Policy, :show?
   end
 
