@@ -30,15 +30,12 @@ class Thing < ActiveRecord::Base
 
 
   class Create < Trailblazer::Operation
-    include Trailblazer::Operation::Policy
+    include Resolver
     policy Thing::Policy, :create?
     # policy Thing, :create?, "signed_in" (can be infered from class?)
-    include CRUD::ClassBuilder
     model Thing, :create
 
-    builds -> (model, params) do
-      policy = policy_config.policy(params[:current_user], model)
-
+    builds -> (model, policy, params) do
       return self::Admin    if policy.admin?
       return self::SignedIn if policy.signed_in?
     end
@@ -92,7 +89,6 @@ class Thing < ActiveRecord::Base
     include Gemgem::ExpireCache
 
     def upload_image!(thing)
-              # raise f.image.inspect
       contract.image!(contract.file) do |v|
         v.process!(:original)
         v.process!(:thumb)   { |job| job.thumb!("120x120#") }
@@ -126,14 +122,11 @@ class Thing < ActiveRecord::Base
 
 
   class Update < Trailblazer::Operation
-    include CRUD::ClassBuilder
-    model Thing, :update
-    include Trailblazer::Operation::Policy
+    include Resolver
+    self.builder_class = Create.builder_class
     policy Thing::Policy, :update?
 
-    self.builder_class = Create.builder_class
-
-
+    model Thing, :update
 
     class SignedIn < Create
       include CRUD::ClassBuilder
