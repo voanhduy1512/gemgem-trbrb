@@ -89,11 +89,7 @@ class Thing < ActiveRecord::Base
       user.model.authorships.find_by(thing_id: model.id).update_attribute(:confirmed, 0)
     end
 
-    def expire_cache!(thing)
-      CacheVersion.for("thing/cell/grid").expire! # of course, this is only temporary as it
-      # 1. binds Op to view.
-      # 2. expires cache even if thing is not part of that screen.
-    end
+    include Gemgem::ExpireCache
 
     def upload_image!(thing)
               # raise f.image.inspect
