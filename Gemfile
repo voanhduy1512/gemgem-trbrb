@@ -32,7 +32,8 @@ gem "reform", "2.0.4"
 gem "virtus"
 
 # gem "disposable", path: "../disposable"
-gem "tyrant", path: "../tyrant"
+# gem "tyrant", path: "../tyrant"
+gem "tyrant", "0.0.2"
 
 # gem "trailblazer", git: "https://github.com/apotonick/trailblazer.git"
 gem "trailblazer", path: "../trailblazer"
