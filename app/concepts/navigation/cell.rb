@@ -1,6 +1,9 @@
 module Navigation
   # DISCUSS: Context object? or from Tyrant?
   class Cell < ::Cell::Concept
+    property :current_user
+    property :signed_in?
+
     def show
       render
     end
@@ -8,14 +11,6 @@ module Navigation
   private
     def links
       render
-    end
-
-    def signed_in?
-      model.signed_in?
-    end
-
-    def current_user
-      @options[:current_user]
     end
 
     def welcome_signed_in

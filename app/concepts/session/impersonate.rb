@@ -6,7 +6,7 @@ module Session
     def process(params)
 
       # TODO: different Op, this is what usually happens in #process_params!
-      params[:current_user] = params[:tyrant].current_user
+      params[:current_user] = params[:tyrant].current_user # DISCUSS: we could also only pass the tyrant object into Ops without maintaining that :current_user key?
 
 
 
