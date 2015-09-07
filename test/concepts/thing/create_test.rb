@@ -145,7 +145,7 @@ class ThingCreateTest < MiniTest::Spec
 
     # anonymous
     it do
-      thing = Thing::Create.(thing: {name: "Rails", users: [{"email"=>user.email}], is_author: "1"}).model
+      thing = Thing::Create.(thing: {name: "Rails", users: [{"email"=>user.email}], is_author: "1"}, current_user: nil).model
       thing.users.must_equal [user]
     end
 
@@ -167,8 +167,10 @@ class ThingCreateTest < MiniTest::Spec
 
     # admin
     it do
-      thing = Thing::Create.(thing: {name: "Rails", users: [{"email"=>user.email}], is_author: "1"}, current_user: admin).model
+      op    = Thing::Create.(thing: {name: "Rails", users: [{"email"=>user.email}], is_author: "1"}, current_user: admin)
+      thing = op.model
       thing.users.must_equal [user, admin]
+      op.must_be_instance_of Thing::Create::Admin
     end
   end
 end
