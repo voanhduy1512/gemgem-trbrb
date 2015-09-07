@@ -1,6 +1,9 @@
 require "test_helper"
 
 class ThingCreateTest < MiniTest::Spec
+  let (:current_user) { User::Create.(user: {email: "fred@trb.org"}).model }
+  let (:admin)        { User::Create.(user: {email: "admin@trb.org"}).model }
+
   it "rendering" do # DISCUSS: not sure if that will stay here, but i like the idea of presentation/logic in one place.
     form = Thing::Create.present({}).contract
     form.prepopulate! # this is a bit of an API breach.
@@ -134,5 +137,38 @@ class ThingCreateTest < MiniTest::Spec
     Thing::Create.(thing: {name: "Rails", users: [{"email"=>"nick@trb.org"}]}) # nick@trb.org is unsignedup
     res, op = Thing::Create.run(thing: {name: "Trb", users: [{"email"=>"nick@trb.org"}]})
     res.must_equal false
+  end
+
+
+  describe "I'm the author!" do
+    let (:user) { User::Create.(user: {email: "nick@trb.org"}).model }
+
+    # anonymous
+    it do
+      thing = Thing::Create.(thing: {name: "Rails", users: [{"email"=>user.email}], is_author: "1"}).model
+      thing.users.must_equal [user]
+    end
+
+    # signed-in
+    it do
+      thing = Thing::Create.(thing: {name: "Rails", users: [{"email"=>user.email}], is_author: "1"}, current_user: current_user).model
+      thing.users.must_equal [user, current_user]
+    end
+
+    it "doesn't add current_user when is_author: 0" do
+      thing = Thing::Create.(thing: {name: "Rails", users: [{"email"=>user.email}], is_author: "0"}, current_user: current_user).model
+      thing.users.must_equal [user]
+    end
+
+    it "doesn't add current_user when :is_author is absent" do
+      thing = Thing::Create.(thing: {name: "Rails", users: [{"email"=>user.email}]}, current_user: current_user).model
+      thing.users.must_equal [user]
+    end
+
+    # admin
+    it do
+      thing = Thing::Create.(thing: {name: "Rails", users: [{"email"=>user.email}], is_author: "1"}, current_user: admin).model
+      thing.users.must_equal [user, admin]
+    end
   end
 end

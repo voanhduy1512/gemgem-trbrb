@@ -92,7 +92,7 @@ class Thing < ActiveRecord::Base
       include Thing::SignedIn
     end
 
-    class Admin < self
+    class Admin < SignedIn
     end
   end
 
