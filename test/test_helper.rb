@@ -10,7 +10,7 @@ require "pp"
 Rails.backtrace_cleaner.remove_silencers!
 
 MiniTest::Spec.class_eval do
-  after :each do
+  before do
     # DatabaseCleaner.clean
     Thing.delete_all
     Comment.delete_all
@@ -24,6 +24,13 @@ Cell::TestCase.class_eval do
 end
 
 class IntegrationTest < Capybara::Rails::TestCase
+  before do
+    # DatabaseCleaner.clean
+    Thing.delete_all
+    Comment.delete_all
+    User.delete_all
+  end
+
   def sign_in!(email="fred@trb.org", password="123456")
     sign_up!(email, password) #=> Session::SignUp
 
