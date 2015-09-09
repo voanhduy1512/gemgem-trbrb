@@ -118,6 +118,46 @@ class ThingsControllerCreateTest < IntegrationTest
       page.current_path.must_equal thing_path(Thing.last)
       page.wont_have_content "By fred@trb.org"
     end
+
+    # admin.
+    it do
+    sign_in!("admin@trb.org")
+      visit "/things/new"
+
+      # invalid.
+      click_button "Create Thing"
+      page.must_have_css ".error"
+
+      # correct submit.
+      fill_in 'Name', with: "Bad Religion"
+      check "I'm the author!"
+      click_button "Create Thing"
+      # /things/1
+      page.current_path.must_equal thing_path(Thing.last)
+      page.must_have_content "By admin@trb.org"
+
+      # edit
+      click_link "Edit" # /things/1/edit
+      page.must_have_css "form #thing_name"
+      page.wont_have_css "form #thing_name.readonly"
+
+      # update
+      fill_in "Description", with: "Great band"
+      click_button "Update Thing"
+      page.current_path.must_equal thing_path(Thing.last)
+      page.must_have_content "Great band"
+
+      # remove author.
+      # Remove signed in author.
+      click_link "Edit"
+
+      # check "I'm the author!"
+      check("Remove")
+      click_button "Update Thing"
+
+      page.current_path.must_equal thing_path(Thing.last)
+      page.wont_have_content "By admin@trb.org"
+    end
   end
 
 
