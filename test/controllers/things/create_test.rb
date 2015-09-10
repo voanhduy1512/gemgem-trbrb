@@ -37,13 +37,11 @@ class ThingsControllerCreateTest < IntegrationTest
     # signed-in.
     it do
       sign_in!
-      visit "/things/new"
 
+      visit "/things/new"
       assert_new_form
       page.must_have_css("#thing_is_author")
-
-      # no orange background.
-      page.wont_have_css("form.admin")
+      page.wont_have_css("form.admin") # no orange background.
     end
 
     # admin.

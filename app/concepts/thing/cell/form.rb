@@ -16,11 +16,11 @@ private
     ""
   end
 
-  # this will be ::property :signed_in?, boolean: true
-  def signed_in?
-    model.policy.signed_in?
+  def is_author_field?
+    contract.options_for(:is_author)
   end
 
+  # this will be ::property :signed_in?, boolean: true
   def admin?
     model.policy.admin?
   end

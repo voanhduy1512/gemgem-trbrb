@@ -5,8 +5,6 @@ class Thing < ActiveRecord::Base
     action :update
 
     class SignedIn < self
-      include Thing::SignedIn
-
       contract do
         property :name, writeable: false
 
@@ -30,6 +28,8 @@ class Thing < ActiveRecord::Base
     end # SignedIn
 
     class Admin < SignedIn
+      include Thing::SignedIn
+
       contract do
         property :name
       end
