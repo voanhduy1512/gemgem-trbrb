@@ -9,7 +9,7 @@
   %fieldset
     %legend Do you know any authors?
 
-    - if is_author_field?
+    - if has_author_field?
       .row
         = f.input :is_author, as: :boolean, label: "I'm the author!"
 

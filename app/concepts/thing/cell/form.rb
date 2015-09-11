@@ -16,7 +16,7 @@ private
     ""
   end
 
-  def is_author_field?
+  def has_author_field?
     contract.options_for(:is_author)
   end
 
