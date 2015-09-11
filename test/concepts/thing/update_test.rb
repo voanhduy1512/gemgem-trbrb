@@ -6,7 +6,7 @@ class ThingUpdateTest < MiniTest::Spec
   let (:author)       { User::Create.(user: {email: "solnic@trb.org"}).model }
 
   describe "anonymous" do
-    let (:thing) { Thing::Create[thing: {name: "Rails", description: "Kickass web dev", "users"=>[{"email"=>"solnic@trb.org"}]}].model }
+    let (:thing) { Thing::Create.(thing: {name: "Rails", description: "Kickass web dev", "users"=>[{"email"=>"solnic@trb.org"}]}).model }
 
     it do
       assert_raises Trailblazer::NotAuthorizedError do
@@ -19,7 +19,6 @@ class ThingUpdateTest < MiniTest::Spec
 
   # TODO: test "remove"!
   describe "signed-in" do
-    before { author }
     let (:thing) { Thing::Create.(thing: {name: "Rails", description: "Kickass web dev", users: ["email"=>author.email]}).model }
 
     it "denies when no authors" do
@@ -58,6 +57,7 @@ class ThingUpdateTest < MiniTest::Spec
 
 
     describe "adding and removing users" do
+      before { author }
       it "valid, new and existing email" do
         solnic = thing.users[0]
         model  = Thing::Update.(
