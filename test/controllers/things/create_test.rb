@@ -1,6 +1,5 @@
 require "test_helper"
 
-
 class ThingsControllerCreateTest < IntegrationTest
   # let (:thing) do
   #   thing = Thing::Create.(thing: {name: "Rails"}).model

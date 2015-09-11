@@ -27,36 +27,6 @@ class ThingsControllerTest < IntegrationTest
   # controller tests are what i normally do manually, per "concept"
   # see above: workflow for login, create thing, update thing, check markup, that's it.
 
-
-  describe "#edit" do
-    # not signed-in.
-    it "doesn't work with not signed-in" do
-      thing = Thing::Create[thing: {"name" => "Rails", "users" => [{"email" => "joe@trb.org"}]}].model
-
-      visit "/things/#{thing.id}/edit"
-      page.current_path.must_equal "/"
-    end
-
-    it do
-      sign_in!()
-      # thing = Thing::Create[thing: {"name" => "Rails", "users" => [{"email" => "fred@trb.org"}]}].model
-
-      visit "/things/#{thing_with_fred.id}/edit"
-
-      page.must_have_css "form #thing_name.readonly[value='Rails']"
-      # existing email is readonly.
-      page.must_have_css "#thing_users_attributes_0_email.readonly[value='fred@trb.org']"
-      # remove button for existing.
-      page.must_have_css "#thing_users_attributes_0_remove"
-      # empty email for new.
-      page.must_have_css "#thing_users_attributes_1_email"
-      # no remove for new.
-      page.wont_have_css "#thing_users_attributes_1_remove"
-    end
-
-    # TODO: test signed in, but different user.
-  end
-
   describe "#update" do
     it do
       sign_in!()
