@@ -78,6 +78,7 @@ class ThingDeleteTest < MiniTest::Spec
       file = Thing::Cell::Decorator.new(thing)
       File.exists?("public#{file.image[:thumb].url}").must_equal false
       File.exists?("public#{file.image[:original].url}").must_equal false
+      # Paperdragon::Attachment.new(thing.image_meta_data).exists?.must_equal true
     end
   end
 end

@@ -2,11 +2,11 @@ require "test_helper"
 
 class ThingsControllerUpdateTest < IntegrationTest
   def assert_edit_form
-    page.must_have_css "form #thing_name"
-    page.wont_have_css "form #thing_name.readonly"
-
-    # 3 author email fields.
-    page.must_have_css("input.email", count: 3) # TODO: how can i say "no value"?
+    page.must_have_css "#thing_users_attributes_0_remove"
+    # empty email for new.
+    page.must_have_css "#thing_users_attributes_1_email"
+    # no remove for new.
+    page.wont_have_css "#thing_users_attributes_1_remove"
   end
 
   let (:thing_with_fred) do
@@ -38,11 +38,7 @@ class ThingsControllerUpdateTest < IntegrationTest
       # existing email is readonly.
       page.must_have_css "#thing_users_attributes_0_email.readonly[value='fred@trb.org']"
       # remove button for existing.
-      page.must_have_css "#thing_users_attributes_0_remove"
-      # empty email for new.
-      page.must_have_css "#thing_users_attributes_1_email"
-      # no remove for new.
-      page.wont_have_css "#thing_users_attributes_1_remove"
+      assert_edit_form
     end
 
     # admin
@@ -56,11 +52,7 @@ class ThingsControllerUpdateTest < IntegrationTest
       # existing email is readonly.
       page.must_have_css "#thing_users_attributes_0_email.readonly[value='fred@trb.org']"
       # remove button for existing.
-      page.must_have_css "#thing_users_attributes_0_remove"
-      # empty email for new.
-      page.must_have_css "#thing_users_attributes_1_email"
-      # no remove for new.
-      page.wont_have_css "#thing_users_attributes_1_remove"
+      assert_edit_form
     end
   end
 end

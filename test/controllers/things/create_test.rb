@@ -74,6 +74,7 @@ class ThingsControllerCreateTest < IntegrationTest
 
       # edit
       page.wont_have_css "a", text: "Edit"
+      page.wont_have_css "a", text: "Delete"
     end
 
     # signed-in.
@@ -154,6 +155,9 @@ class ThingsControllerCreateTest < IntegrationTest
 
       page.current_path.must_equal thing_path(Thing.last)
       page.wont_have_content "By admin@trb.org"
+
+      click_link "Delete"
+      page.current_path.must_equal root_path
     end
   end
 

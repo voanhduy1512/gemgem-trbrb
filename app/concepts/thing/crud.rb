@@ -111,3 +111,4 @@ class Thing < ActiveRecord::Base
   end
 end
 
+require_dependency "thing/delete"
