@@ -106,8 +106,20 @@ class Thing < ActiveRecord::Base
     def process(*)
     end
 
-    def to_json(*)
-      "hello"
+    # def to_json(*)
+    #   "hello"
+    # end
+    include Representer
+    representer do
+      def self.properties(*names)
+        names.each { |n| property(n) }
+      end
+      properties :id, :name, :description
+    end
+    # include Responder
+
+    def represented
+      model
     end
   end
 
