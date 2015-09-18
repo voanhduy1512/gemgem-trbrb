@@ -1,6 +1,6 @@
 class User < ActiveRecord::Base
   class Create < Trailblazer::Operation
-    include CRUD
+    include Model
     model User, :create
 
     def process(params)

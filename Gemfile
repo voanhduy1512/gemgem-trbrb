@@ -21,19 +21,25 @@ group :development, :test do
   gem "minitest-rails-capybara"
   gem "minitest-line"
 end
+
+group :test do
+  gem 'memory_test_fix'
+  gem "sqlite3"
+end
+
 group :production do
   gem "rails_12factor"
 end
 
 # gem "reform", github: "apotonick/reform", branch: "reform-2"
-# gem "reform", path: "../reform"
-gem "reform", "2.0.4"
+gem "reform", path: "../reform"
+# gem "reform", "2.0.4"
 # gem "disposable", github: "apotonick/disposable"
 gem "virtus"
 
 # gem "disposable", path: "../disposable"
-# gem "tyrant", path: "../tyrant"
-gem "tyrant", "0.0.2"
+gem "tyrant", path: "../tyrant"
+# gem "tyrant", "0.0.2"
 
 # gem "trailblazer", git: "https://github.com/apotonick/trailblazer.git"
 gem "trailblazer", path: "../trailblazer"

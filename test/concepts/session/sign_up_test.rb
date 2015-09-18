@@ -72,7 +72,6 @@ class SessionSignUpUnconfirmedNeedsPasswordTest < MiniTest::Spec
 
     # user = op.model
     user.email.must_equal "selectport@trb.org"
-    user.password_digest.must_equal nil
 
     Tyrant::Authenticatable.new(user).confirmable?.must_equal true
   end

@@ -5,7 +5,7 @@
 #   save => users = [user] (without deleted), removes user from collection.
 require_dependency "thing/policy"
 require "trailblazer/operation/policy"
-require "trailblazer/operation/crud/class_builder"
+require "trailblazer/operation/model/external"
 
 class Thing < ActiveRecord::Base
   class Create < Trailblazer::Operation
@@ -97,7 +97,7 @@ class Thing < ActiveRecord::Base
   end
 
   class Show < Trailblazer::Operation
-    include CRUD
+    include Model
     model Thing, :find
 
     include Trailblazer::Operation::Policy

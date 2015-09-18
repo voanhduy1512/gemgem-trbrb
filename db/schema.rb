@@ -13,9 +13,6 @@
 
 ActiveRecord::Schema.define(version: 20150702042236) do
 
-  # These are extensions that must be enabled in order to support this database
-  enable_extension "plpgsql"
-
   create_table "authorships", force: :cascade do |t|
     t.integer  "user_id"
     t.integer  "thing_id"
@@ -30,7 +27,7 @@ ActiveRecord::Schema.define(version: 20150702042236) do
     t.datetime "updated_at"
   end
 
-  add_index "cache_versions", ["name"], name: "index_cache_versions_on_name", unique: true, using: :btree
+  add_index "cache_versions", ["name"], name: "index_cache_versions_on_name", unique: true
 
   create_table "comments", force: :cascade do |t|
     t.text     "body"
@@ -63,15 +60,12 @@ ActiveRecord::Schema.define(version: 20150702042236) do
   end
 
   create_table "users", force: :cascade do |t|
-    t.string   "email",              limit: 255
-    t.string   "password_digest",    limit: 255
-    t.string   "confirmation_token", limit: 255
-    t.text     "image_meta_data"
+    t.string   "email"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.text     "auth_meta_data"
   end
 
-  add_index "users", ["email"], name: "index_users_on_email", unique: true, using: :btree
+  add_index "users", ["email"], name: "index_users_on_email", unique: true
 
 end

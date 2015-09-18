@@ -1,5 +1,5 @@
 class Thing::Delete < Trailblazer::Operation
-  include CRUD
+  include Model
   model Thing, :find
   policy Thing::Policy, :delete?
 

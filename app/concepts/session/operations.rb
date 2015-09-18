@@ -50,7 +50,6 @@ module Session
       contract do # inherit: false would be cool here.
         property :email
         property :password, virtual: true
-        property :password_digest
 
         def password_ok?(*) # TODO: allow removing validations.
         end
@@ -74,7 +73,7 @@ module Session
   end
 
   class ChangePassword < Trailblazer::Operation # WakeUp
-    include CRUD
+    include Model
     model User, :find
 
     # TODO: copy from SignUp and remove email.
@@ -121,7 +120,7 @@ module Session
 
   # DISCUSS: maybe call ConfirmationTokenIsValid
   class IsConfirmable < Trailblazer::Operation
-    include CRUD # TODO: implement with twin.
+    include Model # TODO: implement with twin.
     model User, :find
 
     def process(params)

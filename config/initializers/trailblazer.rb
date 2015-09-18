@@ -17,16 +17,16 @@ require 'roar/json/hal'
 # require 'trailblazer/rails/railtie'
 
 
-# I extend the CRUD module here to make it also include CRUD::ActiveModel globally. This is my choice as the
+# I extend the Model module here to make it also include Model::ActiveModel globally. This is my choice as the
 # application architect. Don't do it if you don't use ActiveModel form builders/models.
-Trailblazer::Operation::CRUD.module_eval do
+Trailblazer::Operation::Model.module_eval do
   module Included
     def included(base)
-      super # the original CRUD::included method.
-      base.send :include, Trailblazer::Operation::CRUD::ActiveModel
+      super # the original Model::included method.
+      base.send :include, Trailblazer::Operation::Model::ActiveModel
     end
   end
-  extend Included # override CRUD::included.
+  extend Included # override Model::included.
 end
 
 Trailblazer::Operation.class_eval do

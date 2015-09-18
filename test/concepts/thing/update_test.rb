@@ -32,6 +32,8 @@ class ThingUpdateTest < MiniTest::Spec
     end
 
     it "denies when other author" do
+      thing.id
+
       assert_raises Trailblazer::NotAuthorizedError do
         Thing::Update.(
           id:           thing.id,
