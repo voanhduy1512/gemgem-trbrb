@@ -102,6 +102,13 @@ class Thing < ActiveRecord::Base
 
     include Trailblazer::Operation::Policy
     policy Thing::Policy, :show?
+
+    def process(*)
+    end
+
+    def to_json(*)
+      "hello"
+    end
   end
 
   # TODO: do that in contract, too, in chapter 8.

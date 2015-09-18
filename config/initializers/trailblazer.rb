@@ -13,9 +13,6 @@ require 'roar/json/hal'
   end
 # end
 
-# this is too late, apparently. the railtie is not considered anymore.
-# require 'trailblazer/rails/railtie'
-
 Trailblazer::Operation.class_eval do
   include Trailblazer::Operation::Dispatch
   include Trailblazer::Operation::Policy

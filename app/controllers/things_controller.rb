@@ -1,5 +1,5 @@
 class ThingsController  < ApplicationController
-  respond_to :html
+  respond_to :html, :json
 
   def new
     form Thing::Create
@@ -18,6 +18,9 @@ class ThingsController  < ApplicationController
   end
 
   def show
+    respond Thing::Show
+    return
+
     present Thing::Show
     @op = @operation # FIXME.
 
