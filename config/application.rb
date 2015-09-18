@@ -26,6 +26,3 @@ module Gemgem
     config.cells.with_assets = %w( admin/user/cell )
   end
 end
-
-# railties have to be loaded here.
-require 'trailblazer/rails/railtie'
