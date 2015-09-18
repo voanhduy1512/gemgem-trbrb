@@ -43,6 +43,7 @@ gem "tyrant", path: "../tyrant"
 
 # gem "trailblazer", git: "https://github.com/apotonick/trailblazer.git"
 gem "trailblazer", path: "../trailblazer"
+gem "trailblazer-rails", path: "../trailblazer-rails"
 # gem "trailblazer", "0.3.3"
 # gem "cells", git: "https://github.com/apotonick/cells"
 # gem "trailblazer", github: "apotonick/trailblazer"

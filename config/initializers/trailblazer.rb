@@ -16,19 +16,6 @@ require 'roar/json/hal'
 # this is too late, apparently. the railtie is not considered anymore.
 # require 'trailblazer/rails/railtie'
 
-
-# I extend the Model module here to make it also include Model::ActiveModel globally. This is my choice as the
-# application architect. Don't do it if you don't use ActiveModel form builders/models.
-Trailblazer::Operation::Model.module_eval do
-  module Included
-    def included(base)
-      super # the original Model::included method.
-      base.send :include, Trailblazer::Operation::Model::ActiveModel
-    end
-  end
-  extend Included # override Model::included.
-end
-
 Trailblazer::Operation.class_eval do
   include Trailblazer::Operation::Dispatch
   include Trailblazer::Operation::Policy
