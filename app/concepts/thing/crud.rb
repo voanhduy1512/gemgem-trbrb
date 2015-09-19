@@ -94,6 +94,12 @@ class Thing < ActiveRecord::Base
 
     class Admin < SignedIn
     end
+
+
+    def to_json(*)
+      "ficken"
+    end
+     include Responder
   end
 
   class Show < Trailblazer::Operation

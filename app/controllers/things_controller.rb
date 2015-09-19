@@ -1,5 +1,5 @@
 class ThingsController  < ApplicationController
-  respond_to :html, :json
+  respond_to :html
 
   def new
     form Thing::Create
@@ -9,6 +9,7 @@ class ThingsController  < ApplicationController
   end
 
   def create
+    return respond Thing::Create
     run Thing::Create do |op|
       return redirect_to op.model
     end
