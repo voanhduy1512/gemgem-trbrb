@@ -111,10 +111,22 @@ class Thing < ActiveRecord::Base
     # end
     include Representer
     representer do
+      include Roar::Hypermedia
+
       def self.properties(*names)
         names.each { |n| property(n) }
       end
       properties :id, :name, :description
+
+      collection :users, as: :authors do
+        include Roar::Hypermedia
+        include Roar::JSON
+        property :email
+
+        link :self do
+          user_path(represented.id)
+        end
+      end
     end
     # include Responder
 
