@@ -96,10 +96,21 @@ class Thing < ActiveRecord::Base
     end
 
 
-    def to_json(*)
-      "ficken"
+    # def to_json(*)
+    #   "ficken"
+    # end
+    include Representer
+    include Responder
+
+    representer do
+      feature Roar::Hypermedia
+      feature Roar::JSON
+
+      representable_attrs[:definitions].delete("persisted?")
+
+      property :id
+      link(:self) { api_thing_path(represented) }
     end
-     include Responder
   end
 
   class Show < Trailblazer::Operation

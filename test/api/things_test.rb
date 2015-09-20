@@ -18,11 +18,12 @@ class ApiThingsTest < MiniTest::Spec
     data = {name: "Lotus"}
     # request.env["HTTP_ACCEPT"] = "application/json"
     post "/api/things/", data.to_json, "CONTENT_TYPE" => "application/json", "HTTP_ACCEPT"=>"application/json"
-    puts last_response.body
-    # assert last_response.created?
-    follow_redirect!
 
-    assert_equal "http://example.org/redirected", last_request.url
-    assert last_response.ok?
+    last_response.headers["Location"].must_equal "http://example.org/api/things/1"
+    assert last_response.created?
+    last_response.body.must_equal %{{"name":"Lotus","users":[],"id":1,"links":[{"rel":"self","href":"/api/things/1"}]}}
+
+    # assert_equal "http://example.org/redirected", last_request.url
+    # assert last_response.ok?
   end
 end

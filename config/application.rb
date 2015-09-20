@@ -24,5 +24,7 @@ module Gemgem
     config.assets.precompile += %w( vendor/modernizr )
 
     config.cells.with_assets = %w( admin/user/cell )
+
+    # middleware.delete ::ActionDispatch::ParamsParser
   end
 end
