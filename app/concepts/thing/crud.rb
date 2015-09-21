@@ -103,10 +103,17 @@ class Thing < ActiveRecord::Base
     include Responder
 
     representer do
-      feature Roar::Hypermedia
       feature Roar::JSON
+      feature Roar::Hypermedia
 
       representable_attrs[:definitions].delete("persisted?")
+
+      property :users, inherit: true, as: :authors do
+        representable_attrs[:definitions].delete("persisted?")
+
+        property :id
+        link(:self) { user_path(represented.id) }
+      end
 
       property :id
       link(:self) { api_thing_path(represented) }

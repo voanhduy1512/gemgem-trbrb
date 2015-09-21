@@ -21,9 +21,19 @@ class ApiThingsTest < MiniTest::Spec
 
     last_response.headers["Location"].must_equal "http://example.org/api/things/1"
     assert last_response.created?
-    last_response.body.must_equal %{{"name":"Lotus","users":[],"id":1,"links":[{"rel":"self","href":"/api/things/1"}]}}
+    last_response.body.must_equal %{{"name":"Lotus","authors":[],"id":1,"links":[{"rel":"self","href":"/api/things/1"}]}}
 
     # assert_equal "http://example.org/redirected", last_request.url
     # assert last_response.ok?
+  end
+
+  it "post allows adding authors" do
+    data = {name: "Lotus", authors: [{email: "fred@trb.org"}]}
+    post "/api/things/", data.to_json, "CONTENT_TYPE" => "application/json", "HTTP_ACCEPT"=>"application/json"
+    id = Thing.last.id
+
+    last_response.headers["Location"].must_equal "http://example.org/api/things/#{id}"
+    assert last_response.created?
+    last_response.body.must_equal %{{"name":"Lotus","authors":[{"email"}],"id":#{id},"links":[{"rel":"self","href":"/api/things/#{id}"}]}}
   end
 end

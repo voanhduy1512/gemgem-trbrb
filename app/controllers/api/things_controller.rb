@@ -13,7 +13,9 @@ class Api::ThingsController < ApplicationController
 
     # render json: op.to_json, location: "/op", status: :created
 
-    respond Thing::Create#, namespace: :api #, location: "/op/"
+    _params = params
+    _params[:thing] = params
+    respond Thing::Create, _params #, namespace: :api #, location: "/op/"
   end
 
   # TODO: Implement :namespace.
