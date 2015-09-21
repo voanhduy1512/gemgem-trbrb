@@ -2,7 +2,7 @@ class Api::ThingsController < ApplicationController
   respond_to :json
 
   def show
-    respond Thing::Show
+    respond Thing::Api::Show
   end
 
   def create
@@ -10,6 +10,6 @@ class Api::ThingsController < ApplicationController
     # op = Thing::Create.(params)
 
     # render json: op.to_json, location: "/op", status: :created
-    respond Thing::Create, namespace: [:api] #, location: "/op/"
+    respond Thing::Api::Create, namespace: [:api] #, location: "/op/"
   end
 end

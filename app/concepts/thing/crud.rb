@@ -4,8 +4,6 @@
 # how does skipping work: Form.new[user, user2], then validate with [user, user2:skip,user], user2 will still be there but not updated.
 #   save => users = [user] (without deleted), removes user from collection.
 require_dependency "thing/policy"
-require "trailblazer/operation/policy"
-require "trailblazer/operation/model/external"
 
 class Thing < ActiveRecord::Base
   class Create < Trailblazer::Operation
@@ -96,28 +94,7 @@ class Thing < ActiveRecord::Base
     end
 
 
-    # def to_json(*)
-    #   "ficken"
-    # end
-    include Representer
-    include Responder
 
-    representer do
-      feature Roar::JSON
-      feature Roar::Hypermedia
-
-      representable_attrs[:definitions].delete("persisted?")
-
-      property :users, inherit: true, as: :authors do
-        representable_attrs[:definitions].delete("persisted?")
-
-        property :id
-        link(:self) { user_path(represented.id) }
-      end
-
-      property :id
-      link(:self) { api_thing_path(represented) }
-    end
   end
 
   class Show < Trailblazer::Operation
@@ -130,37 +107,7 @@ class Thing < ActiveRecord::Base
     def process(*)
     end
 
-    # def to_json(*)
-    #   "hello"
-    # end
-    include Representer
-    representer do
-      feature Roar::Hypermedia
-      feature Roar::JSON
 
-      def self.properties(*names)
-        names.each { |n| property(n) }
-      end
-      properties :id, :name, :description
-      link(:self) { thing_path(represented) }
-
-      collection :users, as: :authors do
-        property :email
-
-        link :self do
-          user_path(represented)
-        end
-      end
-
-      collection :comments do
-        property :body
-      end
-    end
-    # include Responder
-
-    def represented
-      model
-    end
   end
 
   # TODO: do that in contract, too, in chapter 8.
@@ -171,3 +118,4 @@ class Thing < ActiveRecord::Base
 end
 
 require_dependency "thing/delete"
+require_dependency "thing/api"

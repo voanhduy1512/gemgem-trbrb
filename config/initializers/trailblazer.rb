@@ -1,3 +1,4 @@
+
 require "roar/json"
 require 'roar/json/hal'
 

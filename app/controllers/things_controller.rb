@@ -9,7 +9,6 @@ class ThingsController  < ApplicationController
   end
 
   def create
-    return respond Thing::Create
     run Thing::Create do |op|
       return redirect_to op.model
     end
@@ -19,9 +18,6 @@ class ThingsController  < ApplicationController
   end
 
   def show
-    respond Thing::Show
-    return
-
     present Thing::Show
     @op = @operation # FIXME.
 
