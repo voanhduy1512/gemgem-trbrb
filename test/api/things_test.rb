@@ -9,9 +9,9 @@ class ApiThingsTest < MiniTest::Spec
   end
 
   it do
-    thing = Thing::Create.(thing: {name: "Rails"}).model
-    get "/api/things/#{thing.id}", "", "CONTENT_TYPE" => "application/json", "HTTP_ACCEPT"=>"application/json"
-    last_response.body.must_equal %{{"id":#{thing.id},"name":"Rails","links":[{"rel":"self","href":"/things/#{thing.id}"}],"authors":[],"comments":[]}}
+    id = Thing::Create.(thing: {name: "Rails"}).model.id
+    get "/api/things/#{id}", "", "CONTENT_TYPE" => "application/json", "HTTP_ACCEPT"=>"application/json"
+    last_response.body.must_equal %{{\"name\":\"Rails\",\"authors\":[],\"id\":#{id},\"links\":[{\"rel\":\"self\",\"href\":\"/api/things/#{id}\"}],\"comments\":[]}}
   end
 
   it "post" do
