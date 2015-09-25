@@ -1,6 +1,4 @@
-
-require "roar/json"
-require 'roar/json/hal'
+require "roar/json/hal"
 
 # TODO: this was handled in roar-rails. we don't need roar-rails in Trailblazer (yay!), so provide this via Trb.
 # initializer "roar.set_configs" do |app|

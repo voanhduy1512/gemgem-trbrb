@@ -1,18 +1,14 @@
 module Thing::Api
   class Create < Thing::Create
-    # def to_json(*)
-    #   "ficken"
-    # end
     include Representer
     include Responder
 
     representer do
-      feature Roar::JSON
-      feature Roar::Hypermedia
+      feature Roar::JSON::HAL
 
       representable_attrs[:definitions].delete("persisted?")
 
-      property :users, inherit: true, as: :authors do
+      property :users, inherit: true, as: :authors, embedded: true do
         representable_attrs[:definitions].delete("persisted?")
 
         property :id
