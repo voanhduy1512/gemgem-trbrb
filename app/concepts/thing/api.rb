@@ -1,24 +1,34 @@
 module Thing::Api
+  module T_Representer
+    # include Representable::JSON
+
+    def self.included(includer)
+      includer.class_eval do
+        feature Roar::JSON::HAL
+
+        representable_attrs[:definitions].delete("persisted?")
+
+        property :users, inherit: true, as: :authors, embedded: true do
+          representable_attrs[:definitions].delete("persisted?")
+
+          property :id, writeable: false
+          link(:self) { api_user_path(represented.id) }
+        end
+
+        # puts "***"+ representable_attrs.get(:users)[:instance].inspect
+
+        property :id
+        link(:self) { api_thing_path(represented) }
+      end
+    end
+  end
+
   class Create < Thing::Create
     include Representer
     include Responder
 
     representer do
-      feature Roar::JSON::HAL
-
-      representable_attrs[:definitions].delete("persisted?")
-
-      property :users, inherit: true, as: :authors, embedded: true do
-        representable_attrs[:definitions].delete("persisted?")
-
-        property :id, writeable: false
-        link(:self) { api_user_path(represented.id) }
-      end
-
-      # puts "***"+ representable_attrs.get(:users)[:instance].inspect
-
-      property :id
-      link(:self) { api_thing_path(represented) }
+      include T_Representer
     end
   end
 
@@ -54,24 +64,10 @@ module Thing::Api
       include Representer
       # representer Create.representer
       representer do
-      feature Roar::JSON::HAL
-
-      representable_attrs[:definitions].delete("persisted?")
-
-      property :users, inherit: true, as: :authors, embedded: true do
-        representable_attrs[:definitions].delete("persisted?")
-
-        property :id, writeable: false
-        link(:self) { api_user_path(represented.id) }
+       include T_Representer
       end
 
-      # puts "***"+ representable_attrs.get(:users)[:instance].inspect
-
-      property :id
-      link(:self) { api_thing_path(represented) }
-    end
-
-      puts representer_class.representable_attrs.get(:users).inspect
+      # puts representer_class.representable_attrs.get(:users).inspect
     end
 
   end

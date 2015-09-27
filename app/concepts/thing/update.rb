@@ -19,7 +19,7 @@ class Thing < ActiveRecord::Base
 
       private
         def skip_user?(fragment, options)
-          puts "@@@@@ #{fragment.inspect}"
+          # puts "@@@@@ #{fragment.inspect}"
           # don't process if it's getting removed!
           return true if fragment["remove"] == "1" and users.delete(users.find { |u| u.id.to_s == fragment["id"] })
           # replicate skip_if: :all_blank logic.
