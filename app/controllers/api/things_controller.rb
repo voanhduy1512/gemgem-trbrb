@@ -12,4 +12,8 @@ class Api::ThingsController < ApplicationController
     # render json: op.to_json, location: "/op", status: :created
     respond Thing::Api::Create, namespace: [:api] #, location: "/op/"
   end
+
+  def update
+    respond Thing::Api::Update::Admin, namespace: [:api]
+  end
 end
