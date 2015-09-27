@@ -11,6 +11,9 @@ class ApiThingsTest < MiniTest::Spec
   def post(uri, data)
     super(uri, data, "CONTENT_TYPE" => "application/json", "HTTP_ACCEPT"=>"application/json")
   end
+  def patch(uri, data)
+    super(uri, data, "CONTENT_TYPE" => "application/json", "HTTP_ACCEPT"=>"application/json")
+  end
 
   def get(uri)
     super(uri, nil, "CONTENT_TYPE" => "application/json", "HTTP_ACCEPT"=>"application/json")
@@ -48,6 +51,18 @@ class ApiThingsTest < MiniTest::Spec
   end
 
   describe "PATCH" do
+    it do
+      thing = Thing::Create.(thing: {name: "Lotus", users: [{"email"=> "jacob@trb.org"}]}).model
+      id = thing.id
+      author_id = thing.users.first.id
 
+      data = {authors: [{id: "#{author_id}", remove: "1"}], is_author: "0"}
+      patch "/api/things/#{id}/", data.to_json
+
+      get "/api/things/#{id}"
+      last_response.body.must_equal %{{"name":"Lotus","authors":[],"id":#{id},\"comments\":[],"_links":{"self":{"href":"/api/things/#{id}"}}}}
+    end
   end
 end
+
+# FIXME: representer(include: [:users, :comments]) to exclude image_meta_data etc.

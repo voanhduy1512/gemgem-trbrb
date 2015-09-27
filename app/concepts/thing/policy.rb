@@ -24,4 +24,8 @@ class Thing::Policy
   def delete?
     edit?
   end
+
+  def true?
+    true
+  end
 end

@@ -14,6 +14,7 @@ class Api::ThingsController < ApplicationController
   end
 
   def update
+    # puts "@@@@@ #{Thing::Api::Update::Admin.inspect}"
     respond Thing::Api::Update::Admin, namespace: [:api]
   end
 end
