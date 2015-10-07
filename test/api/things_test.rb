@@ -23,7 +23,7 @@ class ApiThingsTest < MiniTest::Spec
     it do
       id = Thing::Create.(thing: {name: "Rails"}).model.id
       get "/api/things/#{id}"
-      last_response.body.must_equal %{{"name":"Rails","authors":[],"id":#{id},"comments":[],"_links":{"self":{"href":"/api/things/#{id}"}}}}
+      last_response.body.must_equal %{{"name":"Rails","id":#{id},"_embedded":{"comments":[]},"_links":{"self":{"href":"/api/things/#{id}"}}}}
     end
   end
 
@@ -34,7 +34,7 @@ class ApiThingsTest < MiniTest::Spec
 
       last_response.headers["Location"].must_equal "http://example.org/api/things/#{id}"
       assert last_response.created?
-      last_response.body.must_equal %{{\"name\":\"Lotus\",\"authors\":[],\"id\":#{id},\"_links\":{\"self\":{\"href\":\"/api/things/#{id}\"}}}}
+      last_response.body.must_equal %{{"name":"Lotus","id":#{id},"_links":{"self":{"href":"/api/things/#{id}"}}}}
     end
 
     it "post allows adding authors" do
@@ -46,7 +46,7 @@ class ApiThingsTest < MiniTest::Spec
 
       last_response.headers["Location"].must_equal "http://example.org/api/things/#{id}"
       assert last_response.created?
-      last_response.body.must_equal %{{"name":"Lotus","authors":[{"email":"fred@trb.org","id":#{author_id},"_links":{"self":{"href":"/api/users/#{author_id}"}}}],"id":#{id},"_links":{"self":{"href":"/api/things/#{id}"}}}}
+      last_response.body.must_equal %{{"name":"Lotus","id":#{id},"_embedded":{"authors":[{"email":"fred@trb.org","id":#{author_id},"_links":{"self":{"href":"/api/users/#{author_id}"}}}]},"_links":{"self":{"href":"/api/things/#{id}"}}}}
     end
   end
 
@@ -60,7 +60,7 @@ class ApiThingsTest < MiniTest::Spec
       patch "/api/things/#{id}/", data.to_json
 
       get "/api/things/#{id}"
-      last_response.body.must_equal %{{"name":"Lotus","authors":[],"id":#{id},\"comments\":[],"_links":{"self":{"href":"/api/things/#{id}"}}}}
+      last_response.body.must_equal %{{"name":"Lotus","id":#{id},"_embedded":{"comments":[]},"_links":{"self":{"href":"/api/things/#{id}"}}}}
     end
   end
 end

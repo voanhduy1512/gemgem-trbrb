@@ -4,21 +4,7 @@ module Thing::Api
 
     def self.included(includer)
       includer.class_eval do
-        feature Roar::JSON::HAL
 
-        representable_attrs[:definitions].delete("persisted?")
-
-        property :users, inherit: true, as: :authors, embedded: true do
-          representable_attrs[:definitions].delete("persisted?")
-
-          property :id, writeable: false
-          link(:self) { api_user_path(represented.id) }
-        end
-
-        # puts "***"+ representable_attrs.get(:users)[:instance].inspect
-
-        property :id
-        link(:self) { api_thing_path(represented) }
       end
     end
   end
@@ -28,7 +14,21 @@ module Thing::Api
     include Responder
 
     representer do
-      include T_Representer
+      feature Roar::JSON::HAL
+
+      representable_attrs[:definitions].delete("persisted?")
+
+      collection :users, inherit: true, as: :authors, embedded: true, render_empty: false do
+        representable_attrs[:definitions].delete("persisted?")
+
+        property :id, writeable: false
+        link(:self) { api_user_path(represented.id) }
+      end
+
+      # puts "***"+ representable_attrs.get(:users)[:instance].inspect
+
+      property :id
+      link(:self) { api_thing_path(represented) }
     end
   end
 
@@ -39,8 +39,8 @@ module Thing::Api
     # end
     include Representer
 
-    representer Create.representer do
-      collection :comments do
+    representer Class.new(Create.representer) do
+      collection :comments, embedded: true do
         property :body
       end
     end
@@ -62,10 +62,10 @@ module Thing::Api
       #   raise params.inspect
       # end
       include Representer
-      # representer Create.representer
-      representer do
-       include T_Representer
-      end
+      representer Create.representer
+      # representer do
+      #  include T_Representer
+      # end
 
       # puts representer_class.representable_attrs.get(:users).inspect
     end
