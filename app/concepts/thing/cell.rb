@@ -26,8 +26,7 @@ private
     end
 
     def show
-      things = Thing.latest
-      concept("thing/cell", collection: things, last: things.last)
+      concept("thing/cell", collection: model, last: model.last)
     end
   end
 

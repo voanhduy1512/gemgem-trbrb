@@ -18,17 +18,15 @@ class ThingsController  < ApplicationController
   end
 
   def show
-    present Thing::Show
-    @op = @operation # FIXME.
-
+    @thing_op = present Thing::Show
+    @thing    = @thing_op.model
 
     form Comment::Create # overrides @model and @form!
-    @form.prepopulate!
   end
 
   def create_comment
-    present Thing::Show
-    @op = @operation # FIXME.
+    @thing_op = present Thing::Show
+    @thing    = @thing_op.model
 
     run Comment::Create do |op| # overrides @model and @form!
       flash[:notice] = "Created comment for \"#{op.thing.name}\""
@@ -70,7 +68,7 @@ class ThingsController  < ApplicationController
   def next_comments
     present Thing::Show
 
-    render js: concept("comment/cell/grid", @thing, page: params[:page]).(:append)
+    render js: concept("comment/cell/grid", @model, page: params[:page]).(:append)
   end
 
 private

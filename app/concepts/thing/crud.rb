@@ -115,6 +115,13 @@ class Thing < ActiveRecord::Base
     extend Paperdragon::Model::Writer
     processable_writer :image
   end
+
+
+  class Index < Trailblazer::Operation
+    def model!(params)
+      Thing.latest
+    end
+  end
 end
 
 require_dependency "thing/delete"
