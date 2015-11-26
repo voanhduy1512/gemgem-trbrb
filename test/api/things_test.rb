@@ -111,38 +111,39 @@ class ApiThingsTest < MiniTest::Spec
     it do
       jacobs_thing = Thing::Create.(thing: {name: "Lotus", users: [{"email"=> "jacob@trb.to"}]}).model
       dhhs_thing   = Thing::Create.(thing: {name: "Rails", users: [{"email"=> "dhh@trb.to"}]}).model
+      comment      = Comment::Create.(id: dhhs_thing.id, comment: {body: "I like his stuff!", weight: "1", user: {email: "jose@trb.to"}}).model
       robs_thing   = Thing::Create.(thing: {name: "TRB", users:   [{"email"=> "rob@trb.to"}]}).model
 
       get "/api/things?include=comments"
        pp JSON[last_response.body]
-      JSON[last_response.body].must_equal ({
-        "_embedded"=>
+      JSON[last_response.body].must_equal (
+        {"_embedded"=>
           {"things"=>
             [{"name"=>"TRB",
-              # "id"=>3,
               "_embedded"=>
                {"authors"=>
                  [{"email"=>"rob@trb.to",
-                   # "id"=>3,
-                   "_links"=>{"self"=>{"href"=>"/api/users/#{robs_thing.users[0].id}"}}}]},
+                   "_links"=>{"self"=>{"href"=>"/api/users/#{robs_thing.users[0].id}"}}}],
+                "comments"=>[]},
               "_links"=>{"self"=>{"href"=>"/api/things/#{robs_thing.id}"}}},
              {"name"=>"Rails",
-              # "id"=>2,
               "_embedded"=>
                {"authors"=>
                  [{"email"=>"dhh@trb.to",
-                   # "id"=>2,
-                   "_links"=>{"self"=>{"href"=>"/api/users/#{dhhs_thing.users[0].id}"}}}]},
+                   "_links"=>{"self"=>{"href"=>"/api/users/#{dhhs_thing.users[0].id}"}}}],
+                "comments"=>
+                 [{"body"=>"I like his stuff!",
+                   "_links"=>{"self"=>{"href"=>"/api/comments/#{dhhs_thing.comments[0].id}"}}}]},
               "_links"=>{"self"=>{"href"=>"/api/things/#{dhhs_thing.id}"}}},
              {"name"=>"Lotus",
-              # "id"=>1,
               "_embedded"=>
                {"authors"=>
                  [{"email"=>"jacob@trb.to",
-                   # "id"=>1,
-                   "_links"=>{"self"=>{"href"=>"/api/users/#{jacobs_thing.users[0].id}"}}}]},
+                   "_links"=>{"self"=>{"href"=>"/api/users/#{jacobs_thing.users[0].id}"}}}],
+                "comments"=>[]},
               "_links"=>{"self"=>{"href"=>"/api/things/#{jacobs_thing.id}"}}}]},
-         "_links"=>{"self"=>{"href"=>"/api/things"}}})
+         "_links"=>{"self"=>{"href"=>"/api/things"}}}
+      )
     end
   end
 end
