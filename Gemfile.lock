@@ -14,26 +14,18 @@ PATH
       uber (~> 0.0.9)
 
 PATH
-  remote: ../disposable
-  specs:
-    disposable (0.2.0.rc1)
-      declarative (~> 0.0.4)
-      representable (>= 2.4.0.rc1, < 2.5.0)
-      uber
-
-PATH
   remote: ../reform
   specs:
     reform (2.1.0.rc1)
-      disposable (>= 0.2.0.rc1, < 0.3.0)
-      representable (>= 2.4.0.rc4, < 2.5.0)
+      disposable (>= 0.2.0, < 0.3.0)
+      representable (>= 2.4.0, < 3.1.0)
       uber (~> 0.0.11)
 
 PATH
   remote: ../roar
   specs:
     roar (1.0.3)
-      representable (>= 2.4.0.rc5, <= 3.0.0)
+      representable (>= 2.4.0, < 3.1.0)
 
 PATH
   remote: ../trailblazer
@@ -134,6 +126,10 @@ GEM
       uber (>= 0.0.15)
     descendants_tracker (0.0.4)
       thread_safe (~> 0.3, >= 0.3.1)
+    disposable (0.2.0)
+      declarative (~> 0.0.4)
+      representable (>= 2.4.0, <= 3.1.0)
+      uber
     dragonfly (1.0.12)
       addressable (~> 2.3)
       multi_json (~> 1.0)
@@ -258,7 +254,7 @@ GEM
       thor (>= 0.18.1, < 2.0)
     rake (10.4.2)
     ref (2.0.0)
-    representable (2.4.0.rc5)
+    representable (2.4.0)
       declarative (~> 0.0.5)
       uber (~> 0.0.15)
     responders (2.1.0)
@@ -319,7 +315,6 @@ DEPENDENCIES
   cells!
   cells-haml (= 0.0.8)
   coffee-rails (~> 4.0.0)
-  disposable!
   email_validator
   file_validators (~> 1.2)
   foundation-icons-sass-rails
