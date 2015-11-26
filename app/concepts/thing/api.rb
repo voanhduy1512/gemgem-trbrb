@@ -74,16 +74,12 @@ module Thing::Api
     end
   end
 
-  require "roar/decorator"
   require "representable/hash/collection"
   module Representer
     class Index < Roar::Decorator
-      include Representable::Hash::Collection
+      include Representable::JSON::Collection
 
-      items do
-        property :id
-        property :name
-      end
+      items decorator: Create.representer
     end
   end
 end
