@@ -1,21 +1,42 @@
 module Thing::Api
-  class Create < Thing::Create
-    include Representer
-    include Responder
+    # require "representable/hash/collection"
+  module Representer
+    class Create < Roar::Decorator
+      include Roar::JSON::HAL
 
-    representer do
-      feature Roar::JSON::HAL
+      property :name
+      collection :users, as: :authors, embedded: true, render_empty: false, populator: Reform::Form::Populator::External.new do
+        include Roar::JSON::HAL
 
-      collection :users, inherit: true, as: :authors, embedded: true, render_empty: false do
-        property :id, writeable: false
+        property :email
+
         link(:self) { api_user_path(represented.id) }
       end
 
-      # puts "***"+ representable_attrs.get(:users)[:instance].inspect
-
-      property :id
       link(:self) { api_thing_path(represented) }
     end
+
+    class Index < Roar::Decorator
+      include Roar::JSON::HAL
+
+      collection :to_a, as: :things, embedded: true, decorator: Create
+
+       definitions.get(:to_a)[:extend].(nil).definitions.delete(:id)
+       # end
+
+      link(:self) { things_path }
+    end
+  end
+
+
+
+
+
+  class Create < Thing::Create
+    include Trailblazer::Operation::Representer
+    include Responder
+
+    representer Representer::Create
 
 
   end
@@ -25,7 +46,7 @@ module Thing::Api
     # def to_json(*)
     #   "hello"
     # end
-    include Representer
+    include Trailblazer::Operation::Representer
 
 
 
@@ -51,7 +72,7 @@ module Thing::Api
       # def process(params)
       #   raise params.inspect
       # end
-      include Representer
+      include Trailblazer::Operation::Representer
       representer Create.representer
 
 
@@ -60,16 +81,7 @@ module Thing::Api
 
   end
 
-  # require "representable/hash/collection"
-  module Representer
-    class Index < Roar::Decorator
-      include Roar::JSON::HAL
 
-      collection :to_a, as: :things, embedded: true, decorator: Create.representer
-
-      link(:self) { things_path }
-    end
-  end
 
   class Index < Trailblazer::Operation
     def model!(params)

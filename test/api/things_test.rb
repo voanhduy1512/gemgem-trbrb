@@ -77,31 +77,32 @@ class ApiThingsTest < MiniTest::Spec
       thing = Thing::Create.(thing: {name: "TRB", users:   [{"email"=> "rob@trb.to"}]}).model
 
       get "/api/things"
+       pp JSON[last_response.body]
       JSON[last_response.body].must_equal ({
         "_embedded"=>
           {"things"=>
             [{"name"=>"TRB",
-              "id"=>3,
+              # "id"=>3,
               "_embedded"=>
                {"authors"=>
                  [{"email"=>"rob@trb.to",
-                   "id"=>3,
+                   # "id"=>3,
                    "_links"=>{"self"=>{"href"=>"/api/users/3"}}}]},
               "_links"=>{"self"=>{"href"=>"/api/things/3"}}},
              {"name"=>"Rails",
-              "id"=>2,
+              # "id"=>2,
               "_embedded"=>
                {"authors"=>
                  [{"email"=>"dhh@trb.to",
-                   "id"=>2,
+                   # "id"=>2,
                    "_links"=>{"self"=>{"href"=>"/api/users/2"}}}]},
               "_links"=>{"self"=>{"href"=>"/api/things/2"}}},
              {"name"=>"Lotus",
-              "id"=>1,
+              # "id"=>1,
               "_embedded"=>
                {"authors"=>
                  [{"email"=>"jacob@trb.to",
-                   "id"=>1,
+                   # "id"=>1,
                    "_links"=>{"self"=>{"href"=>"/api/users/1"}}}]},
               "_links"=>{"self"=>{"href"=>"/api/things/1"}}}]},
          "_links"=>{"self"=>{"href"=>"/things"}}})
