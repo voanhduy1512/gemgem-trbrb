@@ -60,6 +60,17 @@ module Thing::Api
 
   end
 
+  # require "representable/hash/collection"
+  module Representer
+    class Index < Roar::Decorator
+      include Roar::JSON::HAL
+
+      collection :to_a, as: :things, embedded: true, decorator: Create.representer
+
+      link(:self) { things_path }
+    end
+  end
+
   class Index < Trailblazer::Operation
     def model!(params)
       Thing.latest
@@ -69,17 +80,13 @@ module Thing::Api
 
     end
 
-    def to_json(*)
-      Representer::Index.new(@model).to_json
-    end
-  end
-
-  require "representable/hash/collection"
-  module Representer
-    class Index < Roar::Decorator
-      include Representable::JSON::Collection
-
-      items decorator: Create.representer
+    include Trailblazer::Operation::Representer
+    representer Representer::Index
+    # def to_json(*)
+    #   Representer::Index.new(@model).to_json
+    # end
+    def represented
+      model
     end
   end
 end

@@ -2,7 +2,7 @@ class Api::ThingsController < ApplicationController
   respond_to :json
 
   def index
-    respond Thing::Api::Index
+    respond Thing::Api::Index, is_document: false
   end
 
   def show
