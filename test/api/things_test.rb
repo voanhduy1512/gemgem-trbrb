@@ -25,6 +25,12 @@ class ApiThingsTest < MiniTest::Spec
       get "/api/things/#{id}"
       last_response.body.must_equal %{{"name":"Rails","id":#{id},"_embedded":{"comments":[]},"_links":{"self":{"href":"/api/things/#{id}"}}}}
     end
+
+    it "shows authors" do
+      id = Thing::Create.(thing: {name: "Rails", users: [{email: "fred@trb.to"}]}).model.id
+      get "/api/things/#{id}"
+      last_response.body.must_equal %{{"name":"Rails","id":#{id},"_embedded":{"comments":[]},"_links":{"self":{"href":"/api/things/#{id}"}}}}
+    end
   end
 
   describe "POST" do
@@ -61,6 +67,17 @@ class ApiThingsTest < MiniTest::Spec
 
       get "/api/things/#{id}"
       last_response.body.must_equal %{{"name":"Lotus","id":#{id},"_embedded":{"comments":[]},"_links":{"self":{"href":"/api/things/#{id}"}}}}
+    end
+  end
+
+  describe "GET /things?with_comments=1" do
+    it do
+      thing = Thing::Create.(thing: {name: "Lotus", users: [{"email"=> "jacob@trb.to"}]}).model
+      thing = Thing::Create.(thing: {name: "Rails", users: [{"email"=> "dhh@trb.to"}]}).model
+      thing = Thing::Create.(thing: {name: "TRB", users:   [{"email"=> "rob@trb.to"}]}).model
+
+      get "/api/things"
+      last_response.body.must_equal %{{"name":"Lotus"}}
     end
   end
 end

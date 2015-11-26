@@ -1,14 +1,4 @@
 module Thing::Api
-  module T_Representer
-    # include Representable::JSON
-
-    def self.included(includer)
-      includer.class_eval do
-
-      end
-    end
-  end
-
   class Create < Thing::Create
     include Representer
     include Responder
@@ -16,11 +6,7 @@ module Thing::Api
     representer do
       feature Roar::JSON::HAL
 
-      representable_attrs[:definitions].delete("persisted?")
-
       collection :users, inherit: true, as: :authors, embedded: true, render_empty: false do
-        representable_attrs[:definitions].delete("persisted?")
-
         property :id, writeable: false
         link(:self) { api_user_path(represented.id) }
       end
@@ -30,6 +16,8 @@ module Thing::Api
       property :id
       link(:self) { api_thing_path(represented) }
     end
+
+
   end
 
 
@@ -38,6 +26,8 @@ module Thing::Api
     #   "hello"
     # end
     include Representer
+
+
 
     representer Class.new(Create.representer) do
       collection :comments, embedded: true do
@@ -63,12 +53,37 @@ module Thing::Api
       # end
       include Representer
       representer Create.representer
-      # representer do
-      #  include T_Representer
-      # end
+
 
       # puts representer_class.representable_attrs.get(:users).inspect
     end
 
+  end
+
+  class Index < Trailblazer::Operation
+    def model!(params)
+      Thing.latest
+    end
+
+    def process(*)
+
+    end
+
+    def to_json(*)
+      Representer::Index.new(@model).to_json
+    end
+  end
+
+  require "roar/decorator"
+  require "representable/hash/collection"
+  module Representer
+    class Index < Roar::Decorator
+      include Representable::Hash::Collection
+
+      items do
+        property :id
+        property :name
+      end
+    end
   end
 end

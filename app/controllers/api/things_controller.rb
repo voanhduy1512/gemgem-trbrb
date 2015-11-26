@@ -1,6 +1,10 @@
 class Api::ThingsController < ApplicationController
   respond_to :json
 
+  def index
+    respond Thing::Api::Index
+  end
+
   def show
     respond Thing::Api::Show
   end
