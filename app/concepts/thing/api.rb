@@ -21,9 +21,6 @@ module Thing::Api
 
       collection :to_a, as: :things, embedded: true, decorator: Create
 
-       definitions.get(:to_a)[:extend].(nil).definitions.delete(:id)
-       # end
-
       link(:self) { things_path }
     end
   end
