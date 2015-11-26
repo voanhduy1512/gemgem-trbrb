@@ -1,10 +1,23 @@
+module Comment::API
+  module Representer
+    class Show < Roar::Decorator
+      include Roar::JSON::HAL
+
+      property :body
+
+      link(:self) { api_comment_path(represented.id) }
+    end
+  end
+
+end
+
 module Thing::Api
     # require "representable/hash/collection"
   module Representer
     class Create < Roar::Decorator
       include Roar::JSON::HAL
 
-      property :name
+      property   :name
       collection :users, as: :authors, embedded: true, render_empty: false, populator: Reform::Form::Populator::External.new do
         include Roar::JSON::HAL
 
@@ -19,9 +32,9 @@ module Thing::Api
     class Index < Roar::Decorator
       include Roar::JSON::HAL
 
-      collection :to_a, as: :things, embedded: true, decorator: Create
+      collection :to_a, as: :things, embedded: true, decorator: Class.new(Create)
 
-      link(:self) { things_path }
+      link(:self) { api_things_path }
     end
   end
 
@@ -34,8 +47,6 @@ module Thing::Api
     include Responder
 
     representer Representer::Create
-
-
   end
 
 
