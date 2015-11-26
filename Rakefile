@@ -20,7 +20,11 @@ namespace :test do
     t.verbose = true
   end
 
-
+  Rake::TestTask.new(:api) do |t|
+    t.libs << "test"
+    t.pattern = 'test/api/**/*_test.rb'
+    t.verbose = true
+  end
 end
 
 lib_task = Rake::Task["test:concepts"]
