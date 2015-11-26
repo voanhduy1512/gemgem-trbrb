@@ -32,7 +32,11 @@ module Thing::Api
     class Index < Roar::Decorator
       include Roar::JSON::HAL
 
-      collection :to_a, as: :things, embedded: true, decorator: Class.new(Create)
+      with_comments = Class.new(Create) do
+        collection :comments, decorator: Comment::API::Representer::Show, embedded: true
+      end
+
+      collection :to_a, as: :things, embedded: true, decorator: with_comments
 
       link(:self) { api_things_path }
     end
@@ -107,6 +111,13 @@ module Thing::Api
     # end
     def represented
       model
+    end
+
+    def to_json(*)
+      options = {to_a: {}}
+      options[:to_a][:exclude] = [:comments] unless @params[:include] == "comments"
+
+      super(options)
     end
   end
 end
