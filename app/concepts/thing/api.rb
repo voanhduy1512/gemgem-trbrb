@@ -97,6 +97,7 @@ module Thing::Api
 
   class Index < Trailblazer::Operation
     def model!(params)
+      return Thing.oldest if params[:sort] == "oldest"
       Thing.latest
     end
 

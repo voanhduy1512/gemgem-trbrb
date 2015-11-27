@@ -177,6 +177,41 @@ class ApiThingsTest < MiniTest::Spec
       )
     end
 
+    describe "sort" do
+      it "sort=recent" do
+        things = 20.times.collect { |i| Thing::Create.(thing: {name: "Thing #{i}", users: [{"email"=> "#{i}@trb.to"}]}).model }
+
+        get "/api/things?include="
+       # pp JSON[last_response.body]
+
+        JSON[last_response.body].must_equal(
+          {
+            "_embedded"=>
+              {
+                "things"=>
+                  things.reverse[0..8].collect { |t| {"name"=>"#{t.name}", "_links"=>{"self"=>{"href"=>"/api/things/#{t.id}"}}} }
+              },
+            "_links"=>{"self"=>{"href"=>"/api/things"}}}
+          )
+      end
+
+      it "sort=oldest" do
+        things = 20.times.collect { |i| Thing::Create.(thing: {name: "Thing #{i}", users: [{"email"=> "#{i}@trb.to"}]}).model }
+
+        get "/api/things?include=&sort=oldest"
+       # pp JSON[last_response.body]
+
+        JSON[last_response.body].must_equal(
+          {
+            "_embedded"=>
+              {
+                "things"=>
+                  things[0..8].collect { |t| {"name"=>"#{t.name}", "_links"=>{"self"=>{"href"=>"/api/things/#{t.id}"}}} }
+              },
+            "_links"=>{"self"=>{"href"=>"/api/things"}}}
+          )
+      end
+    end
   end
 end
 
