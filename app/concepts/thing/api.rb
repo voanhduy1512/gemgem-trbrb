@@ -115,7 +115,13 @@ module Thing::Api
 
     def to_json(*)
       options = {to_a: {}}
-      options[:to_a][:exclude] = [:comments] unless @params[:include] == "comments"
+
+      if @params[:include]
+        scalars = self.class.representer.definitions.get(:to_a).representer_module.
+          definitions.values.reject { |dfn| dfn.typed? }.map { |dfn| dfn[:name].to_sym }
+
+        options[:to_a][:include] = [*scalars, :links, @params[:include].to_sym]
+      end
 
       super(options)
     end
