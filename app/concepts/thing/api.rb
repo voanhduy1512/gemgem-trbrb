@@ -110,9 +110,6 @@ module Thing::Api
     # def to_json(*)
     #   Representer::Index.new(@model).to_json
     # end
-    def represented
-      model
-    end
 
     def to_json(*)
       options = {to_a: {}}
