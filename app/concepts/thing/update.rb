@@ -24,14 +24,13 @@ class Thing < ActiveRecord::Base
           property :id
           property :email, skip_if: :skip_email?
 
-          def skip_email?(fragment, options)
+          def skip_email?(options)
             model.persisted?
           end
         end
 
       private
         def skip_user?(fragment, options)
-          # puts "@@@@@ #{fragment.inspect}"
           # don't process if it's getting removed!
           return true if fragment["remove"] == "1" and users.delete(users.find { |u| u.id.to_s == fragment["id"] })
           # replicate skip_if: :all_blank logic.
