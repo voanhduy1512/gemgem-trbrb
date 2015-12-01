@@ -125,4 +125,6 @@ class Thing < ActiveRecord::Base
 end
 
 require_dependency "thing/delete"
-require_dependency "thing/api"
+require_dependency "api/v1/comment/representer"
+require_dependency "api/v1/thing/representer"
+require_dependency "api/v1/thing/operations"

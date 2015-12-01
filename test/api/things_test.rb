@@ -22,37 +22,37 @@ class ApiThingsTest < MiniTest::Spec
   describe "GET" do
     it do
       id = Thing::Create.(thing: {name: "Rails"}).model.id
-      get "/api/things/#{id}"
-      last_response.body.must_equal %{{"name":"Rails","_embedded":{"comments":[]},"_links":{"self":{"href":"/api/things/#{id}"}}}}
+      get "/api/v1/things/#{id}"
+      last_response.body.must_equal %{{"name":"Rails","_embedded":{"comments":[]},"_links":{"self":{"href":"/api/v1/things/#{id}"}}}}
     end
 
     it "shows authors" do
       id = Thing::Create.(thing: {name: "Rails", users: [{email: "fred@trb.to"}]}).model.id
-      get "/api/things/#{id}"
-      last_response.body.must_equal %{{"name":"Rails","_embedded":{"comments":[]},"_links":{"self":{"href":"/api/things/#{id}"}}}}
+      get "/api/v1/things/#{id}"
+      last_response.body.must_equal %{{"name":"Rails","_embedded":{"comments":[]},"_links":{"self":{"href":"/api/v1/things/#{id}"}}}}
     end
   end
 
   describe "POST" do
     it "post" do
-      post "/api/things/", { name: "Lotus" }.to_json
+      post "/api/v1/things/", { name: "Lotus" }.to_json
       id = Thing.last.id
 
-      last_response.headers["Location"].must_equal "http://example.org/api/things/#{id}"
+      last_response.headers["Location"].must_equal "http://example.org/api/v1/things/#{id}"
       assert last_response.created?
-      last_response.body.must_equal %{{"name":"Lotus","_links":{"self":{"href":"/api/things/#{id}"}}}}
+      last_response.body.must_equal %{{"name":"Lotus","_links":{"self":{"href":"/api/v1/things/#{id}"}}}}
     end
 
     it "POST allows adding authors yyy" do
       data = { name: "Lotus", _embedded: { authors: [{ email: "fred@trb.org" }] } }
-      post "/api/things/", data.to_json
+      post "/api/v1/things/", data.to_json
 
       id = Thing.last.id
       author_id = Thing.last.users.first.id
 
-      last_response.headers["Location"].must_equal "http://example.org/api/things/#{id}"
+      last_response.headers["Location"].must_equal "http://example.org/api/v1/things/#{id}"
       assert last_response.created?
-      last_response.body.must_equal %{{"name":"Lotus","_embedded":{"authors":[{"email":"fred@trb.org","_links":{"self":{"href":"/api/users/#{author_id}"}}}]},"_links":{"self":{"href":"/api/things/#{id}"}}}}
+      last_response.body.must_equal %{{"name":"Lotus","_embedded":{"authors":[{"email":"fred@trb.org","_links":{"self":{"href":"/api/v1/users/#{author_id}"}}}]},"_links":{"self":{"href":"/api/v1/things/#{id}"}}}}
     end
   end
 
@@ -63,10 +63,10 @@ class ApiThingsTest < MiniTest::Spec
       author_id = thing.users.first.id
 
       data = {_embedded: { authors: [{id: "#{author_id}", remove: "1"}] }, is_author: "0"}
-      patch "/api/things/#{id}/", data.to_json
+      patch "/api/v1/things/#{id}/", data.to_json
 
-      get "/api/things/#{id}"
-      last_response.body.must_equal %{{"name":"Lotus","_embedded":{"authors":[{"email":"jacob@trb.org","_links":{"self":{"href":"/api/users/#{author_id}"}}}],"comments":[]},"_links":{"self":{"href":"/api/things/#{id}"}}}}
+      get "/api/v1/things/#{id}"
+      last_response.body.must_equal %{{"name":"Lotus","_embedded":{"authors":[{"email":"jacob@trb.org","_links":{"self":{"href":"/api/v1/users/#{author_id}"}}}],"comments":[]},"_links":{"self":{"href":"/api/v1/things/#{id}"}}}}
     end
 
     it "allow to edit for admin xxx" do
@@ -78,10 +78,10 @@ class ApiThingsTest < MiniTest::Spec
 
       Session::SignUp::Admin.(user: {email: "admin@trb.org", password: "123456"})
       authorize("admin@trb.org", "123456")
-      patch "/api/things/#{id}/", data.to_json
+      patch "/api/v1/things/#{id}/", data.to_json
 
-      get "/api/things/#{id}"
-      last_response.body.must_equal %{{"name":"Roda","_embedded":{"comments":[]},"_links":{"self":{"href":"/api/things/#{id}"}}}}
+      get "/api/v1/things/#{id}"
+      last_response.body.must_equal %{{"name":"Roda","_embedded":{"comments":[]},"_links":{"self":{"href":"/api/v1/things/#{id}"}}}}
     end
   end
 
@@ -92,7 +92,7 @@ class ApiThingsTest < MiniTest::Spec
       comment      = Comment::Create.(id: dhhs_thing.id, comment: {body: "I like his stuff!", weight: "1", user: {email: "jose@trb.to"}}).model
       robs_thing   = Thing::Create.(thing: {name: "TRB", users:   [{"email"=> "rob@trb.to"}]}).model
 
-      get "/api/things"
+      get "/api/v1/things"
        pp JSON[last_response.body]
 
       JSON[last_response.body].must_equal (
@@ -102,26 +102,26 @@ class ApiThingsTest < MiniTest::Spec
               "_embedded"=>
               {"authors"=>
                 [{"email"=>"rob@trb.to",
-                  "_links"=>{"self"=>{"href"=>"/api/users/#{robs_thing.users[0].id}"}}}],
+                  "_links"=>{"self"=>{"href"=>"/api/v1/users/#{robs_thing.users[0].id}"}}}],
                 "comments"=>[]},
-              "_links"=>{"self"=>{"href"=>"/api/things/#{robs_thing.id}"}}},
+              "_links"=>{"self"=>{"href"=>"/api/v1/things/#{robs_thing.id}"}}},
              {"name"=>"Rails",
               "_embedded"=>
                 {"authors"=>
                   [{"email"=>"dhh@trb.to",
-                    "_links"=>{"self"=>{"href"=>"/api/users/#{dhhs_thing.users[0].id}"}}}],
+                    "_links"=>{"self"=>{"href"=>"/api/v1/users/#{dhhs_thing.users[0].id}"}}}],
                 "comments"=>
                   [{"body"=>"I like his stuff!",
-                  "_links"=>{"self"=>{"href"=>"/api/comments/#{dhhs_thing.comments[0].id}"}}}]},
-              "_links"=>{"self"=>{"href"=>"/api/things/#{dhhs_thing.id}"}}},
+                  "_links"=>{"self"=>{"href"=>"/api/v1/comments/#{dhhs_thing.comments[0].id}"}}}]},
+              "_links"=>{"self"=>{"href"=>"/api/v1/things/#{dhhs_thing.id}"}}},
              {"name"=>"Lotus",
               "_embedded"=>
                 {"authors"=>
                   [{"email"=>"jacob@trb.to",
-                    "_links"=>{"self"=>{"href"=>"/api/users/#{jacobs_thing.users[0].id}"}}}],
+                    "_links"=>{"self"=>{"href"=>"/api/v1/users/#{jacobs_thing.users[0].id}"}}}],
                 "comments"=>[]},
-              "_links"=>{"self"=>{"href"=>"/api/things/#{jacobs_thing.id}"}}}]},
-        "_links"=>{"self"=>{"href"=>"/api/things"}}}
+              "_links"=>{"self"=>{"href"=>"/api/v1/things/#{jacobs_thing.id}"}}}]},
+        "_links"=>{"self"=>{"href"=>"/api/v1/things"}}}
       )
     end
 
@@ -131,7 +131,7 @@ class ApiThingsTest < MiniTest::Spec
       comment      = Comment::Create.(id: dhhs_thing.id, comment: {body: "I like his stuff!", weight: "1", user: {email: "jose@trb.to"}}).model
       robs_thing   = Thing::Create.(thing: {name: "TRB", users:   [{"email"=> "rob@trb.to"}]}).model
 
-      get "/api/things?include=users"
+      get "/api/v1/things?include=users"
        pp JSON[last_response.body]
       JSON[last_response.body].must_equal ({
         "_embedded"=>
@@ -142,25 +142,25 @@ class ApiThingsTest < MiniTest::Spec
                {"authors"=>
                  [{"email"=>"rob@trb.to",
                    # "id"=>3,
-                   "_links"=>{"self"=>{"href"=>"/api/users/#{robs_thing.users[0].id}"}}}]},
-              "_links"=>{"self"=>{"href"=>"/api/things/#{robs_thing.id}"}}},
+                   "_links"=>{"self"=>{"href"=>"/api/v1/users/#{robs_thing.users[0].id}"}}}]},
+              "_links"=>{"self"=>{"href"=>"/api/v1/things/#{robs_thing.id}"}}},
              {"name"=>"Rails",
               # "id"=>2,
               "_embedded"=>
                {"authors"=>
                  [{"email"=>"dhh@trb.to",
                    # "id"=>2,
-                   "_links"=>{"self"=>{"href"=>"/api/users/#{dhhs_thing.users[0].id}"}}}]},
-              "_links"=>{"self"=>{"href"=>"/api/things/#{dhhs_thing.id}"}}},
+                   "_links"=>{"self"=>{"href"=>"/api/v1/users/#{dhhs_thing.users[0].id}"}}}]},
+              "_links"=>{"self"=>{"href"=>"/api/v1/things/#{dhhs_thing.id}"}}},
              {"name"=>"Lotus",
               # "id"=>1,
               "_embedded"=>
                {"authors"=>
                  [{"email"=>"jacob@trb.to",
                    # "id"=>1,
-                   "_links"=>{"self"=>{"href"=>"/api/users/#{jacobs_thing.users[0].id}"}}}]},
-              "_links"=>{"self"=>{"href"=>"/api/things/#{jacobs_thing.id}"}}}]},
-         "_links"=>{"self"=>{"href"=>"/api/things"}}})
+                   "_links"=>{"self"=>{"href"=>"/api/v1/users/#{jacobs_thing.users[0].id}"}}}]},
+              "_links"=>{"self"=>{"href"=>"/api/v1/things/#{jacobs_thing.id}"}}}]},
+         "_links"=>{"self"=>{"href"=>"/api/v1/things"}}})
     end
 
     it "includes comments, only" do
@@ -169,7 +169,7 @@ class ApiThingsTest < MiniTest::Spec
       comment      = Comment::Create.(id: dhhs_thing.id, comment: {body: "I like his stuff!", weight: "1", user: {email: "jose@trb.to"}}).model
       robs_thing   = Thing::Create.(thing: {name: "TRB", users:   [{"email"=> "rob@trb.to"}]}).model
 
-      get "/api/things?include=comments"
+      get "/api/v1/things?include=comments"
        pp JSON[last_response.body]
       JSON[last_response.body].must_equal (
         {"_embedded"=>
@@ -177,18 +177,18 @@ class ApiThingsTest < MiniTest::Spec
             [{"name"=>"TRB",
               "_embedded"=>
               {"comments"=>[]},
-              "_links"=>{"self"=>{"href"=>"/api/things/#{robs_thing.id}"}}},
+              "_links"=>{"self"=>{"href"=>"/api/v1/things/#{robs_thing.id}"}}},
              {"name"=>"Rails",
               "_embedded"=>
                 {"comments"=>
                   [{"body"=>"I like his stuff!",
-                  "_links"=>{"self"=>{"href"=>"/api/comments/#{dhhs_thing.comments[0].id}"}}}]},
-              "_links"=>{"self"=>{"href"=>"/api/things/#{dhhs_thing.id}"}}},
+                  "_links"=>{"self"=>{"href"=>"/api/v1/comments/#{dhhs_thing.comments[0].id}"}}}]},
+              "_links"=>{"self"=>{"href"=>"/api/v1/things/#{dhhs_thing.id}"}}},
              {"name"=>"Lotus",
               "_embedded"=>
                 {"comments"=>[]},
-              "_links"=>{"self"=>{"href"=>"/api/things/#{jacobs_thing.id}"}}}]},
-        "_links"=>{"self"=>{"href"=>"/api/things"}}}
+              "_links"=>{"self"=>{"href"=>"/api/v1/things/#{jacobs_thing.id}"}}}]},
+        "_links"=>{"self"=>{"href"=>"/api/v1/things"}}}
       )
     end
 
@@ -196,7 +196,7 @@ class ApiThingsTest < MiniTest::Spec
       it "sort=recent" do
         things = 20.times.collect { |i| Thing::Create.(thing: {name: "Thing #{i}", users: [{"email"=> "#{i}@trb.to"}]}).model }
 
-        get "/api/things?include="
+        get "/api/v1/things?include="
        # pp JSON[last_response.body]
 
         JSON[last_response.body].must_equal(
@@ -204,16 +204,16 @@ class ApiThingsTest < MiniTest::Spec
             "_embedded"=>
               {
                 "things"=>
-                  things.reverse[0..8].collect { |t| {"name"=>"#{t.name}", "_links"=>{"self"=>{"href"=>"/api/things/#{t.id}"}}} }
+                  things.reverse[0..8].collect { |t| {"name"=>"#{t.name}", "_links"=>{"self"=>{"href"=>"/api/v1/things/#{t.id}"}}} }
               },
-            "_links"=>{"self"=>{"href"=>"/api/things"}}}
+            "_links"=>{"self"=>{"href"=>"/api/v1/things"}}}
           )
       end
 
       it "sort=oldest" do
         things = 20.times.collect { |i| Thing::Create.(thing: {name: "Thing #{i}", users: [{"email"=> "#{i}@trb.to"}]}).model }
 
-        get "/api/things?include=&sort=oldest"
+        get "/api/v1/things?include=&sort=oldest"
        # pp JSON[last_response.body]
 
         JSON[last_response.body].must_equal(
@@ -221,9 +221,9 @@ class ApiThingsTest < MiniTest::Spec
             "_embedded"=>
               {
                 "things"=>
-                  things[0..8].collect { |t| {"name"=>"#{t.name}", "_links"=>{"self"=>{"href"=>"/api/things/#{t.id}"}}} }
+                  things[0..8].collect { |t| {"name"=>"#{t.name}", "_links"=>{"self"=>{"href"=>"/api/v1/things/#{t.id}"}}} }
               },
-            "_links"=>{"self"=>{"href"=>"/api/things"}}}
+            "_links"=>{"self"=>{"href"=>"/api/v1/things"}}}
           )
       end
     end

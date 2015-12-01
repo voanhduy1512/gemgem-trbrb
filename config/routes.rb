@@ -25,8 +25,10 @@ Rails.application.routes.draw do
   end
 
   namespace :api do
-    resources :things
-    resources :users
-    resources :comments
+    namespace :v1 do
+      resources :things
+      resources :users
+      resources :comments
+    end
   end
 end
