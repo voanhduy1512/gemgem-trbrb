@@ -1,5 +1,4 @@
 require "test_helper"
-require "rails/test_help"
 
 class ApiThingsTest < MiniTest::Spec
   include Rack::Test::Methods

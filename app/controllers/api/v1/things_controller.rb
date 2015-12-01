@@ -3,7 +3,7 @@ module API::V1
     respond_to :json
 
     def index
-      respond Thing::Index, is_document: false
+      respond Thing::Index#, is_document: false
     end
 
     def show
