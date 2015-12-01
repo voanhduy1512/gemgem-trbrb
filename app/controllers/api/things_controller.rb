@@ -18,7 +18,15 @@ class Api::ThingsController < ApplicationController
   end
 
   def update
-    # puts "@@@@@ #{Thing::Api::Update::Admin.inspect}"
-    respond Thing::Api::Update::Admin, namespace: [:api]
+    if request.authorization
+      email, password = ActionController::HttpAuthentication::Basic.user_name_and_password(request)
+
+      Session::SignIn.run(session: { email: email, password: password }) do |op|
+        # look how we do _not_ use any global variables for authentication!!!!!!! *win*
+        params[:current_user] = op.model
+      end
+    end
+
+    respond Thing::Api::Update, namespace: [:api], is_document: true
   end
 end

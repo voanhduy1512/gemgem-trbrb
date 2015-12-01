@@ -1,3 +1,5 @@
+# sudo -i -u postgres
+# psql$ create role nick with createdb login
 development:
   # adapter: sqlite3
   # database: db/development.sqlite3

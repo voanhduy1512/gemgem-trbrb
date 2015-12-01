@@ -19,6 +19,7 @@ module Thing::Api
 
       property   :name
       collection :users, as: :authors, embedded: true, render_empty: false, populator: Reform::Form::Populator::External.new do
+      # collection :users, as: :authors, embedded: true, render_empty: false, populator: ->(input, options) { raise options[:fragment].inspect } do
         include Roar::JSON::HAL
 
         property :email
@@ -75,8 +76,10 @@ module Thing::Api
   end
 
   class Update < Thing::Update
+    self.builder_class = ::Thing::Create.builder_class
+
     class Admin < Thing::Update::Admin
-      self.policy Thing::Policy, :true?
+      # self.policy Thing::Policy, :true?
 
       # def setup!(param)
       #   raise param.inspect
@@ -87,8 +90,8 @@ module Thing::Api
       include Trailblazer::Operation::Representer
       representer Create.representer
 
-
-      # puts representer_class.representable_attrs.get(:users).inspect
+      puts
+      puts representer_class.representable_attrs.get(:users).inspect
     end
 
   end

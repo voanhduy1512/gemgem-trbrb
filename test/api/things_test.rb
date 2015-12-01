@@ -35,7 +35,7 @@ class ApiThingsTest < MiniTest::Spec
 
   describe "POST" do
     it "post" do
-      post "/api/things/", {name: "Lotus"}.to_json
+      post "/api/things/", { name: "Lotus" }.to_json
       id = Thing.last.id
 
       last_response.headers["Location"].must_equal "http://example.org/api/things/#{id}"
@@ -43,8 +43,8 @@ class ApiThingsTest < MiniTest::Spec
       last_response.body.must_equal %{{"name":"Lotus","_links":{"self":{"href":"/api/things/#{id}"}}}}
     end
 
-    it "post allows adding authors" do
-      data = {name: "Lotus", authors: [{email: "fred@trb.org"}]}
+    it "POST allows adding authors yyy" do
+      data = { name: "Lotus", _embedded: { authors: [{ email: "fred@trb.org" }] } }
       post "/api/things/", data.to_json
 
       id = Thing.last.id
@@ -57,16 +57,31 @@ class ApiThingsTest < MiniTest::Spec
   end
 
   describe "PATCH" do
-    it do
+    it "does not allow to edit for anonymous" do
       thing = Thing::Create.(thing: {name: "Lotus", users: [{"email"=> "jacob@trb.org"}]}).model
       id = thing.id
       author_id = thing.users.first.id
 
-      data = {authors: [{id: "#{author_id}", remove: "1"}], is_author: "0"}
+      data = {_embedded: { authors: [{id: "#{author_id}", remove: "1"}] }, is_author: "0"}
       patch "/api/things/#{id}/", data.to_json
 
       get "/api/things/#{id}"
-      last_response.body.must_equal %{{"name":"Lotus","_embedded":{"comments":[]},"_links":{"self":{"href":"/api/things/#{id}"}}}}
+      last_response.body.must_equal %{{"name":"Lotus","_embedded":{"authors":[{"email":"jacob@trb.org","_links":{"self":{"href":"/api/users/#{author_id}"}}}],"comments":[]},"_links":{"self":{"href":"/api/things/#{id}"}}}}
+    end
+
+    it "allow to edit for admin xxx" do
+      thing = Thing::Create.(thing: {name: "Lotus", users: [{"email"=> "jacob@trb.org"}]}).model
+      id = thing.id
+      author_id = thing.users.first.id
+
+      data = {name: "Roda", _embedded: { authors: [{id: "#{author_id}", remove: "1"}] }, is_author: "0"}
+
+      Session::SignUp::Admin.(user: {email: "admin@trb.org", password: "123456"})
+      authorize("admin@trb.org", "123456")
+      patch "/api/things/#{id}/", data.to_json
+
+      get "/api/things/#{id}"
+      last_response.body.must_equal %{{"name":"Roda","_embedded":{"comments":[]},"_links":{"self":{"href":"/api/things/#{id}"}}}}
     end
   end
 

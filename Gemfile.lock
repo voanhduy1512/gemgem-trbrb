@@ -16,7 +16,7 @@ PATH
 PATH
   remote: ../reform
   specs:
-    reform (2.1.0.rc1)
+    reform (2.1.0.pre1)
       disposable (>= 0.2.0, < 0.3.0)
       representable (>= 2.4.0, < 3.1.0)
       uber (~> 0.0.11)
@@ -30,8 +30,9 @@ PATH
 PATH
   remote: ../trailblazer
   specs:
-    trailblazer (1.1.0.beta1)
-      reform (>= 2.1.0.rc1)
+    trailblazer (1.1.0.pre1)
+      declarative
+      reform (>= 2.0.0, < 3.0.0)
       uber (>= 0.0.15)
 
 PATH
@@ -335,6 +336,7 @@ DEPENDENCIES
   rails_12factor
   rails_layout
   reform!
+  representable (= 2.4.0)
   responders
   roar!
   sass-rails (~> 4.0.3)
