@@ -12,7 +12,7 @@ module API::V1
 
     def create
       # render json: op.to_json, location: "/op", status: :created
-      respond Thing::Create, namespace: [:api, :v1] #, location: "/op/"
+      respond Thing::Create, namespace: [:api, :v1], is_document: true #, location: "/op/"
     end
 
     def update

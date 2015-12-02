@@ -1,6 +1,6 @@
 require "test_helper"
 
-class ApiThingsTest < MiniTest::Spec
+class ApiV1ThingsTest < MiniTest::Spec
   include Rack::Test::Methods
 
   def app

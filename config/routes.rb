@@ -26,7 +26,9 @@ Rails.application.routes.draw do
 
   namespace :api do
     namespace :v1 do
-      resources :things#, to: API::V1::Thing::Controller
+      resources :things do#, to: API::V1::Thing::Controller
+        resources :comments
+      end
       resources :users
       resources :comments
     end

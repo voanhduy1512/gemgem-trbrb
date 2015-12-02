@@ -5,7 +5,6 @@ module API::V1
         include Roar::JSON::HAL
 
         property :body
-        property :body
 
         link(:self) { api_v1_comment_path(represented.id) }
       end
