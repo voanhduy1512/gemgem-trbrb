@@ -34,6 +34,12 @@ class ApiV1CommentsTest < MiniTest::Spec
       last_response.body.must_equal(
         {
           body:   "Love it!",
+          _embedded: {
+            user: {
+              email:  "fred@trb.to",
+              _links: { self: { href: "/api/v1/users/#{comment.user.id}" } }
+            }
+            },
           _links: { self: { href: "/api/v1/comments/#{comment.id}" } }
         }.to_json
       )
@@ -51,6 +57,14 @@ class ApiV1CommentsTest < MiniTest::Spec
 
       last_response.status.must_equal 201
       last_response.headers["Location"].must_equal "http://example.org/api/v1/comments/#{comment.id}"
+
+      get "/api/v1/comments/#{comment.id}"
+
+      last_response.body.must_equal(
+        {
+
+        }
+      )
     end
   end
 end
