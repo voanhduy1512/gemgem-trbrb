@@ -43,8 +43,12 @@ class ApiV1ThingsTest < MiniTest::Spec
     end
 
     it "POST allows adding authors yyy" do
-      data = { name: "Lotus", _embedded: { authors: [{ email: "fred@trb.org" }] } }
-      post "/api/v1/things/", data.to_json
+      json = {
+        name:      "Lotus",
+        _embedded: { authors: [{ email: "fred@trb.org" }] }
+        }.to_json
+
+      post "/api/v1/things/", json
 
       id = Thing.last.id
       author_id = Thing.last.users.first.id
@@ -111,6 +115,8 @@ class ApiV1ThingsTest < MiniTest::Spec
                     "_links"=>{"self"=>{"href"=>"/api/v1/users/#{dhhs_thing.users[0].id}"}}}],
                 "comments"=>
                   [{"body"=>"I like his stuff!",
+                    "weight"=>1,
+                    "_embedded"=>{"user"=>{"email"=>"jose@trb.to", "_links"=>{"self"=>{"href"=>"/api/v1/users/#{dhhs_thing.comments[0].user.id}"}}}},
                   "_links"=>{"self"=>{"href"=>"/api/v1/comments/#{dhhs_thing.comments[0].id}"}}}]},
               "_links"=>{"self"=>{"href"=>"/api/v1/things/#{dhhs_thing.id}"}}},
              {"name"=>"Lotus",
@@ -180,7 +186,7 @@ class ApiV1ThingsTest < MiniTest::Spec
              {"name"=>"Rails",
               "_embedded"=>
                 {"comments"=>
-                  [{"body"=>"I like his stuff!",
+                  [{"body"=>"I like his stuff!", "weight"=>1, "_embedded"=>{"user"=>{"email"=>"jose@trb.to", "_links"=>{"self"=>{"href"=>"/api/v1/users/#{dhhs_thing.comments[0].user.id}"}}}},
                   "_links"=>{"self"=>{"href"=>"/api/v1/comments/#{dhhs_thing.comments[0].id}"}}}]},
               "_links"=>{"self"=>{"href"=>"/api/v1/things/#{dhhs_thing.id}"}}},
              {"name"=>"Lotus",

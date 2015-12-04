@@ -2,13 +2,10 @@ module API::V1
   module Thing
     module Representer
       class Create < Roar::Decorator
-        include Roar::JSON::HAL
+        feature Roar::JSON::HAL
 
         property   :name
         collection :users, as: :authors, embedded: true, render_empty: false, populator: Reform::Form::Populator::External.new do
-        # collection :users, as: :authors, embedded: true, render_empty: false, populator: ->(input, options) { raise options[:fragment].inspect } do
-          include Roar::JSON::HAL
-
           property :email
 
           link(:self) { api_v1_user_path(represented.id) }
@@ -18,7 +15,7 @@ module API::V1
       end
 
       class Index < Roar::Decorator
-        include Roar::JSON::HAL
+        feature Roar::JSON::HAL
 
         with_comments = Class.new(Create) do
           collection :comments, decorator: Comment::Representer::Show, embedded: true

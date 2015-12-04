@@ -1,8 +1,7 @@
 module API::V1
   module Thing
     class Create < ::Thing::Create
-      include Trailblazer::Operation::Representer
-      include Responder
+      include Trailblazer::Operation::Representer, Responder
 
       representer Representer::Create
     end
