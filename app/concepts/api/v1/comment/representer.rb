@@ -5,7 +5,8 @@ module API::V1
         feature Roar::JSON::HAL
 
         property :body
-        property :user, embedded: true do
+        property :weight
+        property :user, embedded: true, populator: Reform::Form::Populator::External.new do
           property :email
           link(:self) { api_v1_user_path(represented.id) }
         end

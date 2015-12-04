@@ -15,6 +15,7 @@ module API::V1
       include Trailblazer::Operation::Representer, Responder
 
       include Deserializer::Hash
+      representer Representer::Show
     end
   end
 end

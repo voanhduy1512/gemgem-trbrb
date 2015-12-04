@@ -34,6 +34,7 @@ class ApiV1CommentsTest < MiniTest::Spec
       last_response.body.must_equal(
         {
           body:   "Love it!",
+          weight: 1,
           _embedded: {
             user: {
               email:  "fred@trb.to",
@@ -48,7 +49,12 @@ class ApiV1CommentsTest < MiniTest::Spec
 
   describe "POST /api/v1/things/1/comments" do
     let (:thing) { Thing::Create.(thing: {name: "Rails"}).model }
-    let (:json)  { { body: "Love it!", weight: "1", user: { email: "fred@trb.to" } }.to_json }
+    let (:json)  do
+      {
+        body:      "Love it!", weight: "1",
+        _embedded: { user: { email: "fred@trb.to" } }
+      }.to_json
+    end
 
     it do
       post "/api/v1/things/#{thing.id}/comments", json
@@ -59,6 +65,7 @@ class ApiV1CommentsTest < MiniTest::Spec
       last_response.headers["Location"].must_equal "http://example.org/api/v1/comments/#{comment.id}"
 
       comment.body.must_equal "Love it!"
+      comment.weight.must_equal 1
       comment.user.email.must_equal "fred@trb.to"
 
       # or:
@@ -68,6 +75,7 @@ class ApiV1CommentsTest < MiniTest::Spec
       last_response.body.must_equal(
         {
           body:   "Love it!",
+          weight: 1,
           _embedded: {
             user: {
               email:  "fred@trb.to",
