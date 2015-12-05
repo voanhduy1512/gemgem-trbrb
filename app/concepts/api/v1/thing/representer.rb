@@ -23,7 +23,11 @@ module API::V1
 
         collection :to_a, as: :things, embedded: true, decorator: with_comments
 
-        link(:self) { api_v1_things_path }
+        link(:self) { |params:, **|
+          options = {}
+          options[:sort] = params[:sort] if params[:sort]
+          api_v1_things_path(options)
+        }
       end
 
       class Show < Create

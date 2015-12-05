@@ -59,7 +59,7 @@ class ApiV1ThingsTest < MiniTest::Spec
     end
   end
 
-  describe "PATCH" do
+  describe "PATCH /api/v1/things/1" do
     it "does not allow to edit for anonymous" do
       thing = Thing::Create.(thing: {name: "Lotus", users: [{"email"=> "jacob@trb.org"}]}).model
       id = thing.id
@@ -72,7 +72,7 @@ class ApiV1ThingsTest < MiniTest::Spec
       last_response.body.must_equal %{{"name":"Lotus","_embedded":{"authors":[{"email":"jacob@trb.org","_links":{"self":{"href":"/api/v1/users/#{author_id}"}}}],"comments":[]},"_links":{"self":{"href":"/api/v1/things/#{id}"}}}}
     end
 
-    it "allow to edit for admin xxx" do
+    it "allows update for admin" do
       thing = Thing::Create.(thing: {name: "Lotus", users: [{"email"=> "jacob@trb.org"}]}).model
       id = thing.id
       author_id = thing.users.first.id
@@ -228,7 +228,7 @@ class ApiV1ThingsTest < MiniTest::Spec
                 "things"=>
                   things[0..8].collect { |t| {"name"=>"#{t.name}", "_links"=>{"self"=>{"href"=>"/api/v1/things/#{t.id}"}}} }
               },
-            "_links"=>{"self"=>{"href"=>"/api/v1/things"}}}
+            "_links"=>{"self"=>{"href"=>"/api/v1/things?sort=oldest"}}}
           )
       end
     end

@@ -35,7 +35,7 @@ module API::V1
       representer Representer::Index
 
       def to_json(*)
-        options = {to_a: {}}
+        options = {params: @params, to_a: {}}
 
         if @params[:include]
           scalars = self.class.representer.definitions.get(:to_a).representer_module.
