@@ -3,6 +3,7 @@ class ThingsController < ApplicationController
 
   def new
     form Thing::Create
+    render_form
   end
 
   def create
@@ -10,29 +11,14 @@ class ThingsController < ApplicationController
       return redirect_to op.model
     end
 
-    render action: :new
-  end
-
-  def show
-    present Thing::Update
-    form Comment::Create # overrides @model and @form!
-    # @form.prepopulate!
-  end
-
-  def create_comment
-    present Thing::Update
-    run Comment::Create do |op| # overrides @model and @form!
-      flash[:notice] = "Created comment for \"#{op.thing.name}\""
-      return redirect_to thing_path(op.thing)
-    end
-
-    render :show
+    @form.prepopulate!
+    render_form
   end
 
   def edit
     form Thing::Update
 
-    render action: :new
+    render_form
   end
 
   def update
@@ -43,9 +29,35 @@ class ThingsController < ApplicationController
     render action: :new
   end
 
-  def next_comments
-    present Thing::Update
+  def show
+    @thing_op = present Thing::Show
+    @thing    = @thing_op.model
 
-    render js: concept("comment/cell/grid", @thing, page: params[:page]).(:append)
+    form Comment::Create # overrides @model and @form!
+  end
+
+  def create_comment
+    @thing_op = present Thing::Show
+    @thing    = @thing_op.model
+
+    run Comment::Create, params: params.merge(thing_id: params[:id]) do |op| # overrides @model and @form!
+      flash[:notice] = "Created comment for \"#{op.thing.name}\""
+      return redirect_to thing_path(op.thing)
+    end
+
+    render :show
+  end
+
+  protect_from_forgery except: :next_comments # FIXME: this is only required in the test, things_controller_test.
+  def next_comments
+    present Thing::Show
+
+    render js: concept("comment/cell/grid", @model, page: params[:page]).(:append)
+  end
+
+private
+  def render_form
+    render text: concept("thing/cell/form", @operation),
+      layout: true
   end
 end

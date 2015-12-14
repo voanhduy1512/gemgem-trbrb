@@ -3,28 +3,25 @@ require 'test_helper'
 class CommentCellTest < Cell::TestCase
   controller ThingsController
 
-  let (:thing) do
-    thing = Thing::Create[thing: {name: "Rails"}].model
+  let (:thing) { Thing::Create.(thing: {name: "Rails"}).model }
 
-    Comment::Create[comment: {body: "Excellent", weight: "0", user: {email: "zavan@trb.org"}}, id: thing.id]
-    Comment::Create[comment: {body: "!Well.", weight: "1", user: {email: "jonny@trb.org"}}, id: thing.id]
-    Comment::Create[comment: {body: "Cool stuff!", weight: "0", user: {email: "chris@trb.org"}}, id: thing.id]
-    Comment::Create[comment: {body: "Improving.", weight: "1", user: {email: "hilz@trb.org"}}, id: thing.id]
-
-    thing
+  before do
+    Comment::Create.(comment: {body: "Excellent", weight: "0", user: {email: "zavan@trb.org"}}, thing_id: thing.id)
+    Comment::Create.(comment: {body: "!Well.", weight: "1", user: {email: "jonny@trb.org"}}, thing_id: thing.id)
+    Comment::Create.(comment: {body: "Cool stuff!", weight: "0", user: {email: "chris@trb.org"}}, thing_id: thing.id)
+    Comment::Create.(comment: {body: "Improving.", weight: "1", user: {email: "hilz@trb.org"}}, thing_id: thing.id)
   end
 
   # the comment grid.
   # .(:show)
   it do
     html = concept("comment/cell/grid", thing).(:show)
-    # puts html
-    html = Capybara.string(html)
 
     comments = html.all(:css, ".comment")
     comments.size.must_equal 3
 
     first = comments[0]
+    puts first.find(".header").class
     first.find(".header").must_have_content "hilz@trb.org"
     first.find(".header time")["datetime"].must_match /\d\d-/
     first.must_have_content "Improving"
@@ -53,7 +50,7 @@ class CommentCellTest < Cell::TestCase
   it do
     html = concept("comment/cell/grid", thing, page: 2).(:append)
 
-    html.must_match /replaceWith/
-    html.must_match /zavan@trb.org/
+    html.to_s.must_match /replaceWith/
+    html.to_s.must_match /zavan@trb.org/
   end
 end

@@ -1,9 +1,24 @@
+=# params[:current_user].inspect
+
 .header
   %h1
-    #{@thing.name}
-    = link_to "Edit", edit_thing_path(@thing)
+    = concept("thing/cell/decorator", @thing).(:thumb)
 
-#{@thing.description}
+    #{@thing.name}
+    - if @thing_op.policy.(:edit?)
+      - # TODO: test links with admin, owner, non-owner.
+      = link_to "Edit", edit_thing_path(@thing)
+    - if @thing_op.policy.(:delete?)
+      = link_to "Delete", thing_path(@thing), method: :delete
+
+.description
+  #{@thing.description}
+
+.authors
+  By
+  - @thing.users.each do |user|
+    = user.email
+    [#{user.id}]
 
 %hr
 
@@ -14,13 +29,14 @@
   = f.input :body, placeholder: "Your comment", label: false
   = f.collection_radio_buttons :weight, *@form.weights
 
-  = f.fields_for :user do |u|
-    = u.input :email, placeholder: "Your Email", label: false
+  - unless tyrant.signed_in?
+    = f.fields_for :user do |u|
+      = u.input :email, placeholder: "Your email", label: false
 
   = f.button :submit, class: :expand
 
 
-=# @form.errors.messages
+= @form.errors.messages
 
 
 
